@@ -10,9 +10,7 @@ public interface IVehicleRepository {
 
     List<Vehicle> getVehicles();
 
-    void save();
 
-    void load();
     void add(Vehicle vehicle);
     void remove(String id);
     Vehicle getVehicle(String id);

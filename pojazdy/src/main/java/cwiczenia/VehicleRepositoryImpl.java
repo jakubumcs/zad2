@@ -113,7 +113,7 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
         return copy;
     }
 
-    @Override
+
     public void save() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
             for (Vehicle v : vehicles) {
@@ -124,7 +124,7 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
         }
     }
 
-    @Override
+
     public void load() {
         vehicles.clear();
         File file = new File(FILE_NAME);

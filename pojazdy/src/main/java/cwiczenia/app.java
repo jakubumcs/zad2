@@ -12,6 +12,27 @@ public class app {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== Vehicle Rental System ===");
+        System.out.println("1. Login");
+        System.out.println("2. Register");
+        System.out.print("Choose option: ");
+        int startOption = scanner.nextInt();
+        scanner.nextLine();
+
+        if (startOption == 2) {
+            System.out.print("New login: ");
+            String newLogin = scanner.nextLine();
+            System.out.print("New password: ");
+            String newPassword = scanner.nextLine();
+
+            if (auth.register(newLogin, newPassword)) {
+                System.out.println("Registration successful! Please log in.");
+            } else {
+                System.out.println("Login already taken. Exiting.");
+                scanner.close();
+                return;
+            }
+        }
+
         System.out.print("Login: ");
         String login = scanner.nextLine();
         System.out.print("Password: ");
@@ -20,6 +41,7 @@ public class app {
         User loggedIn = auth.authenticate(login, password);
         if (loggedIn == null) {
             System.out.println("Invalid credentials. Exiting.");
+            scanner.close();
             return;
         }
 
@@ -35,12 +57,14 @@ public class app {
     }
 
     static void adminMenu(Scanner scanner, VehicleRepositoryImpl vehicleRepo, UserRepository userRepo) {
+        Authentication auth = new Authentication(userRepo); // reuse Authentication
         while (true) {
             System.out.println("\n1. Show vehicles");
             System.out.println("2. Add vehicle");
             System.out.println("3. Remove vehicle");
             System.out.println("4. Show users");
             System.out.println("5. Exit");
+            System.out.println("6. Remove user");
 
             int option = scanner.nextInt();
             scanner.nextLine();
@@ -95,6 +119,26 @@ public class app {
                 case 5 -> {
                     System.out.println("Exiting...");
                     return;
+                }
+                case 6 -> {
+                    System.out.println("Enter login of user to remove:");
+                    String userLogin = scanner.nextLine();
+
+                    if (userLogin.equals("admin")) {
+                        System.out.println("Cannot remove the admin account!");
+                        break;
+                    }
+
+                    if (userRepo.getUser(userLogin) == null) {
+                        System.out.println("User not found.");
+                        break;
+                    }
+
+                    if (auth.removeUser(userLogin)) {
+                        System.out.println("User removed successfully.");
+                    } else {
+                        System.out.println("Cannot remove user (they may have a rented vehicle).");
+                    }
                 }
                 default -> System.out.println("Invalid option.");
             }

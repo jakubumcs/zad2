@@ -18,6 +18,35 @@ public class Authentication {
         }
         return null;
     }
+    public boolean register(String login, String password) {
+
+
+        if (userRepository.getUser(login) != null) {
+            return false;
+        }
+
+        String hash = hashPassword(password);
+
+        User user = new User(login, hash, "USER", null);
+        userRepository.add(user);
+
+        return true;
+    }
+    public boolean removeUser(String login) {
+
+        User user = userRepository.getUser(login);
+
+        if (user == null) {
+            return false;
+        }
+
+        if (user.getRentedVehicleId() != null) {
+            return false;
+        }
+
+        userRepository.remove(login);
+        return true;
+    }
 
     public static String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);

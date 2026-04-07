@@ -55,7 +55,7 @@ public class UserRepository implements IUserRepository {
     }
 
 
-    @Override
+
     public void save() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
             for (User u : users) {
@@ -71,7 +71,7 @@ public class UserRepository implements IUserRepository {
         }
     }
 
-    @Override
+
     public void load() {
         users.clear();
         File file = new File(FILE_NAME);
@@ -91,6 +91,13 @@ public class UserRepository implements IUserRepository {
             }
         } catch (IOException e) {
             System.err.println("Error loading users: " + e.getMessage());
+        }
+    }
+    @Override
+    public void remove(String login) {
+        boolean removed = users.removeIf(u -> u.getLogin().equals(login));
+        if (removed) {
+            save();
         }
     }
 }
