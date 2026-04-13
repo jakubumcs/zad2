@@ -23,12 +23,10 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.17.1</version>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
         </dependency>
-
-
     </dependencies>
 
     <build>
@@ -53,5 +51,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
