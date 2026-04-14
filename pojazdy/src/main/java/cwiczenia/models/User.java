@@ -1,7 +1,11 @@
 package cwiczenia.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     private String id;
     private String login;
@@ -27,6 +31,7 @@ public class User {
     public String getId() { return id; }
     public String getLogin() { return login; }
     public String getPasswordHash() { return passwordHash; }
+    @JsonIgnore
     public String getPassword() { return passwordHash; }
     public String getRole() { return role; }
 

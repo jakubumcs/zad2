@@ -1,1 +1,11 @@
-[{"id":"6fdc6914-ea98-4154-9475-75677bc9b355","login":"admin","passwordHash":"$2a$10$T2vbMarCQJXGh4VHSIKv9e17goMcKuc0Cf2ZK4AB46uUU.4/IZir2","role":"ADMIN"},{"id":"caab7ee4-1714-4ca8-bb36-de0a57853c31","login":"user","passwordHash":"$2a$10$z7CqxN5ELHIpYThlt7.ijOrOKO0Un2kKIPudZFmjyaJ36K7PHQLqC","role":"USER"}]
+[ {
+  "id" : "e8bcbff1-f7f9-44e3-88a7-e3daaa864e10",
+  "login" : "admin",
+  "passwordHash" : "$2a$10$.1jzR3K8zI9ruhdPgWw13.Oys7llCBAtRpaG54vgNh23dw8Theq7e",
+  "role" : "ADMIN"
+}, {
+  "id" : "42af3229-4e9a-43eb-8590-c674f400d5fc",
+  "login" : "jacek",
+  "passwordHash" : "$2a$10$.nJZeXFEZJ.VRpiDHxACBudDF9GgWHWsh7dcd.BEMwQLjfcti0Jly",
+  "role" : "USER"
+} ]

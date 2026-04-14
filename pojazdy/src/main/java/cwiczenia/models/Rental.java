@@ -1,8 +1,12 @@
 package cwiczenia.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Rental {
     private String id;
     private String userId;
@@ -41,6 +45,7 @@ public class Rental {
     public void setRentDateTime(LocalDateTime rentDateTime) { this.rentDateTime = rentDateTime; }
     public void setReturnDateTime(LocalDateTime returnDateTime) { this.returnDateTime = returnDateTime; }
 
+    @JsonIgnore
     public boolean isActive() { return returnDateTime == null; }
 
     @Override
