@@ -1,12 +1,22 @@
 package cwiczenia;
 
+import cwiczenia.models.User;
+import cwiczenia.models.Vehicle;
+import cwiczenia.models.Rental;
+import cwiczenia.repositories.Impl.RentalRepository;
+import cwiczenia.repositories.Impl.UserRepository;
+import cwiczenia.repositories.Impl.VehicleRepositoryImpl;
+import cwiczenia.services.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class app {
 
     public static void main(String[] args) {
-        VehicleRepositoryImpl vehicleRepo = new VehicleRepositoryImpl();
         UserRepository userRepo = new UserRepository();
+        VehicleRepositoryImpl vehicleRepo = new VehicleRepositoryImpl();
         RentalRepository rentalRepo = new RentalRepository();
 
         if (userRepo.getUser("admin") == null) {
@@ -81,30 +91,36 @@ public class app {
             switch (option) {
                 case 1 -> vehicleService.getAllVehicles().forEach(System.out::println);
                 case 2 -> {
-                    System.out.println("Type (CAR/MOTORCYCLE):"); String type = scanner.nextLine();
-                    System.out.println("ID:");                    String id = scanner.nextLine();
-                    System.out.println("Brand:");                 String brand = scanner.nextLine();
-                    System.out.println("Model:");                 String model = scanner.nextLine();
-                    System.out.println("Year:");                  int year = scanner.nextInt();
-                    System.out.println("Price:");                 double price = scanner.nextDouble();
-                    scanner.nextLine();
-                    if (type.equalsIgnoreCase("CAR")) {
-                        vehicleService.addVehicle(new Car(id, brand, model, year, price, false));
-                    } else if (type.equalsIgnoreCase("MOTORCYCLE")) {
-                        System.out.println("Category (A/A1/A2/AM/B):"); String category = scanner.nextLine();
-                        vehicleService.addVehicle(new Motorcycle(id, brand, model, year, price, false, category));
+                    System.out.print("Category (Car/Motorcycle/Bus): "); String category = scanner.nextLine();
+                    System.out.print("Brand: ");                         String brand = scanner.nextLine();
+                    System.out.print("Model: ");                         String model = scanner.nextLine();
+                    System.out.print("Year: ");                          int year = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Plate: ");                         String plate = scanner.nextLine();
+                    System.out.print("Price: ");                         double price = scanner.nextDouble(); scanner.nextLine();
+
+                    Map<String, String> attributes = new HashMap<>();
+                    if (category.equalsIgnoreCase("Motorcycle")) {
+                        System.out.print("Licence category (A/A1/A2/AM): ");
+                        attributes.put("licence", scanner.nextLine());
+                    } else if (category.equalsIgnoreCase("Bus")) {
+                        System.out.print("Seats: ");
+                        attributes.put("seats", scanner.nextLine());
                     }
+
+                    Vehicle v = new Vehicle(category, brand, model, year, plate, price);
+                    v.setAttributes(attributes);
+                    vehicleService.addVehicle(v);
                     System.out.println("Vehicle added.");
                 }
                 case 3 -> {
-                    System.out.println("Enter vehicle ID to remove:");
+                    System.out.print("Enter vehicle ID to remove: ");
                     String id = scanner.nextLine();
                     System.out.println(vehicleService.removeVehicle(id) ? "Removed." : "Not found.");
                 }
                 case 4 -> userService.getAllUsers().forEach(System.out::println);
                 case 5 -> rentalRepo.getAllRentals().forEach(System.out::println);
                 case 6 -> {
-                    System.out.println("Enter login to remove:");
+                    System.out.print("Enter login to remove: ");
                     String userLogin = scanner.nextLine();
                     System.out.println(userService.removeUser(userLogin) ? "User removed." : "Cannot remove user.");
                 }
@@ -127,13 +143,13 @@ public class app {
             switch (option) {
                 case 1 -> vehicleService.getAvailableVehicles().forEach(System.out::println);
                 case 2 -> {
-                    System.out.println("Enter vehicle ID to rent:");
+                    System.out.print("Enter vehicle ID to rent: ");
                     String id = scanner.nextLine();
-                    Rental r = rentalService.rent(loggedIn.getLogin(), id);
+                    Rental r = rentalService.rent(loggedIn.getId(), id);
                     System.out.println(r != null ? "Rented: " + r : "Cannot rent vehicle.");
                 }
                 case 3 -> {
-                    Rental r = rentalService.returnVehicle(loggedIn.getLogin());
+                    Rental r = rentalService.returnVehicle(loggedIn.getId());
                     System.out.println(r != null ? "Returned: " + r : "No active rental.");
                 }
                 case 4 -> { System.out.println("Exiting..."); return; }

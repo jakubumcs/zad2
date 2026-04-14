@@ -1,18 +1,26 @@
-package cwiczenia;
+package cwiczenia.repositories.Impl;
 
-import java.io.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cwiczenia.models.User;
+import cwiczenia.repositories.IUserRepository;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserRepository implements IUserRepository {
 
     private final List<User> users = new ArrayList<>();
     private final String FILE_NAME;
+    private final ObjectMapper mapper;
 
-    public UserRepository() { this("users.csv"); }
+    public UserRepository() { this("users.json"); }
 
     public UserRepository(String fileName) {
         this.FILE_NAME = fileName;
+        this.mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         load();
     }
 
@@ -53,10 +61,9 @@ public class UserRepository implements IUserRepository {
     }
 
     private void save() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
-            for (User u : users)
-                writer.println(u.getLogin() + ";" + u.getPassword() + ";" + u.getRole());
-        } catch (IOException e) {
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_NAME), users);
+        } catch (Exception e) {
             System.err.println("Error saving users: " + e.getMessage());
         }
     }
@@ -65,15 +72,10 @@ public class UserRepository implements IUserRepository {
         users.clear();
         File file = new File(FILE_NAME);
         if (!file.exists()) return;
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.isBlank()) continue;
-                String[] parts = line.split(";", -1);
-                if (parts.length < 3) continue;
-                users.add(new User(parts[0], parts[1], parts[2]));
-            }
-        } catch (IOException e) {
+        try {
+            User[] loaded = mapper.readValue(file, User[].class);
+            users.addAll(Arrays.asList(loaded));
+        } catch (Exception e) {
             System.err.println("Error loading users: " + e.getMessage());
         }
     }

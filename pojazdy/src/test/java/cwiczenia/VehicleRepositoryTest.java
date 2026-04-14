@@ -1,5 +1,9 @@
 package cwiczenia;
 
+import cwiczenia.models.Car;
+import cwiczenia.models.Vehicle;
+import cwiczenia.repositories.IVehicleRepository;
+import cwiczenia.repositories.Impl.VehicleRepositoryImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

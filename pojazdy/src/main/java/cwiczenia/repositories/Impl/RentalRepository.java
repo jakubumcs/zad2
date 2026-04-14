@@ -1,8 +1,13 @@
-package cwiczenia;
+package cwiczenia.repositories.Impl;
 
-import java.io.*;
-import java.time.LocalDate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cwiczenia.models.Rental;
+import cwiczenia.repositories.IRentalRepository;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,11 +15,13 @@ public class RentalRepository implements IRentalRepository {
 
     private final List<Rental> rentals = new ArrayList<>();
     private final String FILE_NAME;
+    private final ObjectMapper mapper;
 
-    public RentalRepository() { this("rentals.csv"); }
+    public RentalRepository() { this("rentals.json"); }
 
     public RentalRepository(String fileName) {
         this.FILE_NAME = fileName;
+        this.mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         load();
     }
 
@@ -36,9 +43,9 @@ public class RentalRepository implements IRentalRepository {
     }
 
     @Override
-    public Rental getActiveRentalByUser(String userLogin) {
+    public Rental getActiveRentalByUser(String userId) {
         for (Rental r : rentals)
-            if (r.getUserLogin().equals(userLogin) && r.isActive()) return r;
+            if (r.getUserId().equals(userId) && r.isActive()) return r;
         return null;
     }
 
@@ -55,16 +62,16 @@ public class RentalRepository implements IRentalRepository {
     }
 
     @Override
-    public List<Rental> getRentalsByUser(String userLogin) {
+    public List<Rental> getRentalsByUser(String userId) {
         return rentals.stream()
-                .filter(r -> r.getUserLogin().equals(userLogin))
+                .filter(r -> r.getUserId().equals(userId))
                 .collect(Collectors.toList());
     }
 
     private void save() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
-            for (Rental r : rentals) writer.println(r.toCSV());
-        } catch (IOException e) {
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_NAME), rentals);
+        } catch (Exception e) {
             System.err.println("Error saving rentals: " + e.getMessage());
         }
     }
@@ -73,17 +80,10 @@ public class RentalRepository implements IRentalRepository {
         rentals.clear();
         File file = new File(FILE_NAME);
         if (!file.exists()) return;
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.isBlank()) continue;
-                String[] parts = line.split(";", -1);
-                if (parts.length < 5) continue;
-                LocalDate returnedAt = parts[4].equals("null") ? null : LocalDate.parse(parts[4]);
-                rentals.add(new Rental(parts[0], parts[1], parts[2],
-                        LocalDate.parse(parts[3]), returnedAt));
-            }
-        } catch (IOException e) {
+        try {
+            Rental[] loaded = mapper.readValue(file, Rental[].class);
+            rentals.addAll(Arrays.asList(loaded));
+        } catch (Exception e) {
             System.err.println("Error loading rentals: " + e.getMessage());
         }
     }

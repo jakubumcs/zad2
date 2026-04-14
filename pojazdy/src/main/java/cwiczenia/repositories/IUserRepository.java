@@ -1,4 +1,6 @@
-package cwiczenia;
+package cwiczenia.repositories;
+
+import cwiczenia.models.User;
 
 import java.util.List;
 

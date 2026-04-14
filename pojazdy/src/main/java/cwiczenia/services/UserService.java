@@ -1,4 +1,8 @@
-package cwiczenia;
+package cwiczenia.services;
+
+import cwiczenia.models.User;
+import cwiczenia.repositories.IRentalRepository;
+import cwiczenia.repositories.IUserRepository;
 
 import java.util.List;
 
@@ -20,7 +24,7 @@ public class UserService {
         if (login.equals("admin")) return false;
         User user = userRepository.getUser(login);
         if (user == null) return false;
-        if (rentalRepository.getActiveRentalByUser(login) != null) return false;
+        if (rentalRepository.getActiveRentalByUser(user.getId()) != null) return false;
         userRepository.remove(login);
         return true;
     }

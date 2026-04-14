@@ -1,5 +1,7 @@
-package cwiczenia;
+package cwiczenia.services;
 
+import cwiczenia.models.User;
+import cwiczenia.repositories.IUserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class AuthService {
@@ -12,7 +14,7 @@ public class AuthService {
 
     public User login(String login, String password) {
         User user = userRepository.getUser(login);
-        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+        if (user != null && BCrypt.checkpw(password, user.getPasswordHash())) {
             return user;
         }
         return null;

@@ -1,4 +1,7 @@
-package cwiczenia;
+package cwiczenia.services;
+
+import cwiczenia.models.Vehicle;
+import cwiczenia.repositories.IVehicleRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +15,11 @@ public class VehicleService {
     }
 
     public void addVehicle(Vehicle vehicle) {
-        vehicleRepository.add(vehicle);
+        if (vehicleRepository.getVehicle(vehicle.getId()) == null) {
+            vehicleRepository.add(vehicle);
+        } else {
+            System.err.println("Vehicle with ID " + vehicle.getId() + " already exists.");
+        }
     }
 
     public boolean removeVehicle(String id) {
