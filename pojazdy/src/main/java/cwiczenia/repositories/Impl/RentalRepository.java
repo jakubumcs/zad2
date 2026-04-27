@@ -2,26 +2,24 @@ package cwiczenia.repositories.Impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cwiczenia.db.JsonFileStorage;
 import cwiczenia.models.Rental;
 import cwiczenia.repositories.IRentalRepository;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RentalRepository implements IRentalRepository {
 
     private final List<Rental> rentals = new ArrayList<>();
-    private final String FILE_NAME;
-    private final ObjectMapper mapper;
+    private final JsonFileStorage<Rental> storage;
 
     public RentalRepository() { this("rentals.json"); }
 
     public RentalRepository(String fileName) {
-        this.FILE_NAME = fileName;
-        this.mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        this.storage = new JsonFileStorage<>(mapper, fileName, Rental.class);
         load();
     }
 
@@ -69,22 +67,11 @@ public class RentalRepository implements IRentalRepository {
     }
 
     private void save() {
-        try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_NAME), rentals);
-        } catch (Exception e) {
-            System.err.println("Error saving rentals: " + e.getMessage());
-        }
+        storage.save(rentals);
     }
 
     private void load() {
         rentals.clear();
-        File file = new File(FILE_NAME);
-        if (!file.exists()) return;
-        try {
-            Rental[] loaded = mapper.readValue(file, Rental[].class);
-            rentals.addAll(Arrays.asList(loaded));
-        } catch (Exception e) {
-            System.err.println("Error loading rentals: " + e.getMessage());
-        }
+        rentals.addAll(storage.load());
     }
 }

@@ -1,1 +1,13 @@
-[{"id":"66af921b-ea65-459d-bf84-3d9112e71757","vehicleId":"a98a0b2b-541d-4629-a11f-3dae492806e3","userId":"caab7ee4-1714-4ca8-bb36-de0a57853c31","rentDateTime":"2026-03-30T14:32:36.397739400","returnDateTime":"2026-03-30T14:32:48.477041300"}]
+[ {
+  "id" : "66af921b-ea65-459d-bf84-3d9112e71757",
+  "userId" : "caab7ee4-1714-4ca8-bb36-de0a57853c31",
+  "vehicleId" : "a98a0b2b-541d-4629-a11f-3dae492806e3",
+  "rentDateTime" : [ 2026, 3, 30, 14, 32, 36, 397739400 ],
+  "returnDateTime" : [ 2026, 3, 30, 14, 32, 48, 477041300 ]
+}, {
+  "id" : "2c3c80c8-78a5-4903-ba52-ea4b861bc3ac",
+  "userId" : "6dd7e2e5-f819-4fdf-90e0-3a7e079de4f1",
+  "vehicleId" : "65b0cdb4-58c7-419a-97bf-811af7f3fe41",
+  "rentDateTime" : [ 2026, 4, 26, 21, 6, 12, 889559300 ],
+  "returnDateTime" : null
+} ]

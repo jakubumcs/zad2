@@ -2,25 +2,23 @@ package cwiczenia.repositories.Impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cwiczenia.db.JsonFileStorage;
 import cwiczenia.models.User;
 import cwiczenia.repositories.IUserRepository;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class UserRepository implements IUserRepository {
 
     private final List<User> users = new ArrayList<>();
-    private final String FILE_NAME;
-    private final ObjectMapper mapper;
+    private final JsonFileStorage<User> storage;
 
     public UserRepository() { this("users.json"); }
 
     public UserRepository(String fileName) {
-        this.FILE_NAME = fileName;
-        this.mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        this.storage = new JsonFileStorage<>(mapper, fileName, User.class);
         load();
     }
 
@@ -61,22 +59,11 @@ public class UserRepository implements IUserRepository {
     }
 
     private void save() {
-        try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_NAME), users);
-        } catch (Exception e) {
-            System.err.println("Error saving users: " + e.getMessage());
-        }
+        storage.save(users);
     }
 
     private void load() {
         users.clear();
-        File file = new File(FILE_NAME);
-        if (!file.exists()) return;
-        try {
-            User[] loaded = mapper.readValue(file, User[].class);
-            users.addAll(Arrays.asList(loaded));
-        } catch (Exception e) {
-            System.err.println("Error loading users: " + e.getMessage());
-        }
+        users.addAll(storage.load());
     }
 }

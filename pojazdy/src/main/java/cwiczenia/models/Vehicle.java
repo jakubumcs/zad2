@@ -1,9 +1,12 @@
 package cwiczenia.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Vehicle {
 
     private String id;
@@ -14,7 +17,7 @@ public class Vehicle {
     private String plate;
     private double price;
     private boolean rented;
-    private Map<String, String> attributes = new HashMap<>();
+    private Map<String, Object> attributes = new HashMap<>();
 
     public Vehicle() {}
 
@@ -30,7 +33,7 @@ public class Vehicle {
     }
 
     public Vehicle(String id, String category, String brand, String model, int year,
-                   String plate, double price, boolean rented, Map<String, String> attributes) {
+                   String plate, double price, boolean rented, Map<String, Object> attributes) {
         this.id = id;
         this.category = category;
         this.brand = brand;
@@ -50,7 +53,7 @@ public class Vehicle {
     public String getPlate() { return plate; }
     public double getPrice() { return price; }
     public boolean isRented() { return rented; }
-    public Map<String, String> getAttributes() { return attributes; }
+    public Map<String, Object> getAttributes() { return attributes; }
 
     public void setId(String id) { this.id = id; }
     public void setCategory(String category) { this.category = category; }
@@ -60,11 +63,30 @@ public class Vehicle {
     public void setPlate(String plate) { this.plate = plate; }
     public void setPrice(double price) { this.price = price; }
     public void setRented(boolean rented) { this.rented = rented; }
-    public void setAttributes(Map<String, String> attributes) { this.attributes = attributes; }
+    public void setAttributes(Map<String, Object> attributes) { this.attributes = attributes; }
+
+    public void addAttribute(String name, Object value) {
+        this.attributes.put(name, value);
+    }
 
     @Override
     public String toString() {
-        return "[" + category + "] " + brand + " " + model + " (" + year + ") plate=" + plate +
-                " price=" + price + " rented=" + rented + " attributes=" + attributes + " id=" + id;
+        return "[" + category + "] " + brand + " " + model + " (" + year + ") rejestracja=" + plate +
+                " cena=" + price + " wypożyczony=" + rented + " atrybuty=" + formatAttributes() + " id=" + id;
+    }
+
+    private Map<String, Object> formatAttributes() {
+        Map<String, Object> formatted = new HashMap<>();
+        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+            formatted.put(displayLabel(entry.getKey()), entry.getValue());
+        }
+        return formatted;
+    }
+
+    private String displayLabel(String key) {
+        return switch (key) {
+            case "fuelType" -> "typ paliwa";
+            default -> key;
+        };
     }
 }

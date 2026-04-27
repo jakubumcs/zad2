@@ -2,25 +2,23 @@ package cwiczenia.repositories.Impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cwiczenia.db.JsonFileStorage;
 import cwiczenia.models.Vehicle;
 import cwiczenia.repositories.IVehicleRepository;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class VehicleRepositoryImpl implements IVehicleRepository {
 
     private final List<Vehicle> vehicles = new ArrayList<>();
-    private final String FILE_NAME;
-    private final ObjectMapper mapper;
+    private final JsonFileStorage<Vehicle> storage;
 
     public VehicleRepositoryImpl() { this("vehicles.json"); }
 
     public VehicleRepositoryImpl(String fileName) {
-        this.FILE_NAME = fileName;
-        this.mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        this.storage = new JsonFileStorage<>(mapper, fileName, Vehicle.class);
         load();
     }
 
@@ -59,22 +57,11 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
     }
 
     private void save() {
-        try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_NAME), vehicles);
-        } catch (Exception e) {
-            System.err.println("Error saving vehicles: " + e.getMessage());
-        }
+        storage.save(vehicles);
     }
 
     private void load() {
         vehicles.clear();
-        File file = new File(FILE_NAME);
-        if (!file.exists()) return;
-        try {
-            Vehicle[] loaded = mapper.readValue(file, Vehicle[].class);
-            vehicles.addAll(Arrays.asList(loaded));
-        } catch (Exception e) {
-            System.err.println("Error loading vehicles: " + e.getMessage());
-        }
+        vehicles.addAll(storage.load());
     }
 }
