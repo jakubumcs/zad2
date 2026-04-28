@@ -9,5 +9,11 @@
   "userId" : "6dd7e2e5-f819-4fdf-90e0-3a7e079de4f1",
   "vehicleId" : "65b0cdb4-58c7-419a-97bf-811af7f3fe41",
   "rentDateTime" : [ 2026, 4, 26, 21, 6, 12, 889559300 ],
-  "returnDateTime" : null
+  "returnDateTime" : [ 2026, 4, 28, 9, 46, 4, 608143700 ]
+}, {
+  "id" : "e3472119-4431-408f-aa4e-d56170a7006c",
+  "userId" : "c61173e3-f8cf-4c62-933e-4354325a3793",
+  "vehicleId" : "a98a0b2b-541d-4629-a11f-3dae492806e3",
+  "rentDateTime" : [ 2026, 4, 28, 9, 41, 5, 746760400 ],
+  "returnDateTime" : [ 2026, 4, 28, 9, 41, 7, 807958600 ]
 } ]

@@ -3,9 +3,4 @@
   "login" : "admin",
   "passwordHash" : "$2a$10$VLRSuvx9YAkDW7YyjZJRluuJLcdksOhGPtWL6Wtw6R2n10iIe3r3m",
   "role" : "ADMIN"
-}, {
-  "id" : "6dd7e2e5-f819-4fdf-90e0-3a7e079de4f1",
-  "login" : "jakub",
-  "passwordHash" : "$2a$10$KPRysuq6W9Jo44bHWvQrB.as1HpN2dtWIlZFrT5sv7g85drmGG1O2",
-  "role" : "USER"
 } ]

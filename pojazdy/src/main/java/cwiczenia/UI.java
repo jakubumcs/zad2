@@ -199,21 +199,38 @@ public class UI {
             System.out.println("Brak użytkowników.");
             return;
         }
+
         users.forEach(user -> {
             System.out.println(user);
             List<Rental> rentals = rentalService.findUserRentals(user.getId());
-            if (rentals.isEmpty()) {
-                System.out.println("  Historia wypożyczeń: brak");
+
+            List<Rental> activeRentals = rentals.stream()
+                    .filter(Rental::isActive)
+                    .toList();
+            List<Rental> completedRentals = rentals.stream()
+                    .filter(rental -> !rental.isActive())
+                    .toList();
+
+            System.out.println("  Aktywne wypożyczenia:");
+            if (activeRentals.isEmpty()) {
+                System.out.println("    brak");
             } else {
-                System.out.println("  Historia wypożyczeń:");
-                rentals.forEach(this::printRentalDetails);
+                activeRentals.forEach(rental -> printRentalDetails(rental, "    "));
             }
+
+            System.out.println("  Historia wypożyczeń:");
+            if (completedRentals.isEmpty()) {
+                System.out.println("    brak");
+            } else {
+                completedRentals.forEach(rental -> printRentalDetails(rental, "    "));
+            }
+
             System.out.println("--------------------");
         });
     }
 
     private void deleteUser(User loggedUser) {
-        System.out.print("Podaj ID użytkownika do usunięcia: ");
+        System.out.print("Podaj ID lub login użytkownika do usunięcia: ");
         String userId = scanner.nextLine().trim();
         try {
             userService.deleteUser(userId, loggedUser.getId());
@@ -324,7 +341,11 @@ public class UI {
     }
 
     private void printRentalDetails(Rental rental) {
-        System.out.println("  " + rental);
+        printRentalDetails(rental, "  ");
+    }
+
+    private void printRentalDetails(Rental rental, String indent) {
+        System.out.println(indent + rental);
 
         String login = "nieznany";
         try { login = userService.findById(rental.getUserId()).getLogin(); }
@@ -334,7 +355,7 @@ public class UI {
         try { vehicleStr = vehicleService.findById(rental.getVehicleId()).toString(); }
         catch (Exception ignored) {}
 
-        System.out.println("    user: " + login);
-        System.out.println("    vehicle: " + vehicleStr);
+        System.out.println(indent + "user: " + login);
+        System.out.println(indent + "vehicle: " + vehicleStr);
     }
 }

@@ -27,16 +27,24 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika o ID: " + id));
     }
 
-    public void deleteUser(String userIdToDelete, String requesterId) {
-        if (userIdToDelete.equals(requesterId))
-            throw new IllegalArgumentException("Nie możesz usunąć samego siebie.");
+    public User findByIdOrLogin(String identifier) {
+        return userRepository.getUsers().stream()
+                .filter(u -> u.getId().equals(identifier) || u.getLogin().equals(identifier))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Nie znaleziono użytkownika o ID lub loginie: " + identifier));
+    }
 
-        User toDelete = findById(userIdToDelete);
+    public void deleteUser(String userIdentifierToDelete, String requesterId) {
+        User toDelete = findByIdOrLogin(userIdentifierToDelete);
+
+        if (toDelete.getId().equals(requesterId))
+            throw new IllegalArgumentException("Nie możesz usunąć samego siebie.");
 
         if ("ADMIN".equals(toDelete.getRole()))
             throw new IllegalArgumentException("Nie można usunąć konta administratora.");
 
-        if (rentalRepository.getActiveRentalByUser(userIdToDelete) != null)
+        if (rentalRepository.getActiveRentalByUser(toDelete.getId()) != null)
             throw new IllegalStateException("Nie można usunąć użytkownika z aktywnym wypożyczeniem.");
 
         userRepository.remove(toDelete.getLogin());
