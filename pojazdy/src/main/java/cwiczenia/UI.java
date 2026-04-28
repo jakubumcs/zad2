@@ -3,8 +3,13 @@ package cwiczenia;
 import cwiczenia.models.Rental;
 import cwiczenia.models.User;
 import cwiczenia.models.Vehicle;
+import cwiczenia.models.VehicleAttributeLabels;
 import cwiczenia.models.VehicleCategoryConfig;
-import cwiczenia.services.*;
+import cwiczenia.services.AuthService;
+import cwiczenia.services.RentalService;
+import cwiczenia.services.UserService;
+import cwiczenia.services.VehicleCategoryConfigService;
+import cwiczenia.services.VehicleService;
 
 import java.util.List;
 import java.util.Map;
@@ -91,10 +96,7 @@ public class UI {
             System.out.print("Wybierz opcję: ");
 
             switch (scanner.nextLine().trim()) {
-                case "1" -> vehicleService.findAllVehicles().forEach(v ->
-                        System.out.println(v
-                                + " [Wypożyczony(flaga): " + vehicleService.isVehicleRented(v.getId()) + "]"
-                                + " [Wypożyczony(rental): " + rentalService.vehicleHasActiveRental(v.getId()) + "]"));
+                case "1" -> vehicleService.findAllVehicles().forEach(System.out::println);
                 case "2" -> addVehicle();
                 case "3" -> deleteVehicle();
                 case "4" -> showAllUsers();
@@ -152,7 +154,7 @@ public class UI {
 
         System.out.println("Dostępne kategorie:");
         categories.forEach(c -> System.out.println("  - " + c.getCategory()
-                + " (atrybuty: " + formatAttributeLabels(c.getAttributes()) + ")"));
+                + " (atrybuty: " + VehicleAttributeLabels.formatAttributeLabels(c.getAttributes()) + ")"));
 
         try {
             String categoryName = readText("Podaj kategorię: ");
@@ -311,27 +313,13 @@ public class UI {
     }
 
     private Object readAttributeValue(String attrName, String attrType) {
-        String label = displayLabel(attrName);
+        String label = VehicleAttributeLabels.displayLabel(attrName);
         return switch (attrType.toLowerCase()) {
             case "string"  -> readText(label + " (tekst): ");
             case "number"  -> readDouble(label + " (liczba): ");
             case "boolean" -> readBoolean(label + " (true/false): ");
             case "integer" -> readInt(label + " (liczba całkowita): ");
             default -> throw new IllegalArgumentException("Nieznany typ atrybutu: " + attrType);
-        };
-    }
-
-    private Map<String, String> formatAttributeLabels(Map<String, String> attributes) {
-        Map<String, String> formatted = new java.util.LinkedHashMap<>();
-        attributes.forEach((key, value) -> formatted.put(displayLabel(key), value));
-        return formatted;
-    }
-
-    private String displayLabel(String key) {
-        return switch (key) {
-            case "fuelType" -> "typ paliwa";
-            case "price" -> "cena";
-            default -> key;
         };
     }
 

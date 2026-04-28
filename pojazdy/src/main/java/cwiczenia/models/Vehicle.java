@@ -69,24 +69,24 @@ public class Vehicle {
         this.attributes.put(name, value);
     }
 
+    public Vehicle copy() {
+        return new Vehicle(
+                id,
+                category,
+                brand,
+                model,
+                year,
+                plate,
+                price,
+                rented,
+                attributes == null ? new HashMap<>() : new HashMap<>(attributes)
+        );
+    }
+
     @Override
     public String toString() {
         return "[" + category + "] " + brand + " " + model + " (" + year + ") rejestracja=" + plate +
-                " cena=" + price + " wypożyczony=" + rented + " atrybuty=" + formatAttributes() + " id=" + id;
-    }
-
-    private Map<String, Object> formatAttributes() {
-        Map<String, Object> formatted = new HashMap<>();
-        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
-            formatted.put(displayLabel(entry.getKey()), entry.getValue());
-        }
-        return formatted;
-    }
-
-    private String displayLabel(String key) {
-        return switch (key) {
-            case "fuelType" -> "typ paliwa";
-            default -> key;
-        };
+                " cena=" + price + " wypożyczony=" + rented
+                + " atrybuty=" + VehicleAttributeLabels.formatAttributeValues(attributes) + " id=" + id;
     }
 }

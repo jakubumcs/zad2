@@ -40,32 +40,30 @@ public class VehicleService {
         return true;
     }
 
-    public List<Vehicle> getAllVehicles() {
-        return vehicleRepository.getVehicles();
-    }
-
     public List<Vehicle> findAllVehicles() {
-        return vehicleRepository.getVehicles();
-    }
-
-    public List<Vehicle> getAvailableVehicles() {
-        return vehicleRepository.getVehicles().stream()
-                .filter(v -> rentalRepository.getActiveRentalByVehicle(v.getId()) == null)
-                .collect(Collectors.toList());
+        return withRentalStatus(vehicleRepository.getVehicles());
     }
 
     public List<Vehicle> findAvailableVehicles() {
-        return getAvailableVehicles();
-    }
-
-    public boolean isVehicleRented(String vehicleId) {
-        Vehicle v = vehicleRepository.getVehicle(vehicleId);
-        return v != null && v.isRented();
+        return withRentalStatus(vehicleRepository.getVehicles()).stream()
+                .filter(v -> rentalRepository.getActiveRentalByVehicle(v.getId()) == null)
+                .collect(Collectors.toList());
     }
 
     public Vehicle findById(String id) {
         Vehicle v = vehicleRepository.getVehicle(id);
         if (v == null) throw new IllegalArgumentException("Nie znaleziono pojazdu o ID: " + id);
-        return v;
+        return withRentalStatus(v);
+    }
+
+    private List<Vehicle> withRentalStatus(List<Vehicle> vehicles) {
+        return vehicles.stream()
+                .map(this::withRentalStatus)
+                .collect(Collectors.toList());
+    }
+
+    private Vehicle withRentalStatus(Vehicle vehicle) {
+        vehicle.setRented(rentalRepository.getActiveRentalByVehicle(vehicle.getId()) != null);
+        return vehicle;
     }
 }

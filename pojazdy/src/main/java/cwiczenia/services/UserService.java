@@ -16,16 +16,8 @@ public class UserService {
         this.rentalRepository = rentalRepository;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.getUsers();
-    }
-
     public List<User> findAllUsers() {
         return userRepository.getUsers();
-    }
-
-    public User getUser(String login) {
-        return userRepository.getUser(login);
     }
 
     public User findById(String id) {
@@ -33,15 +25,6 @@ public class UserService {
                 .filter(u -> u.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika o ID: " + id));
-    }
-
-    public boolean removeUser(String login) {
-        if ("admin".equals(login)) return false;
-        User user = userRepository.getUser(login);
-        if (user == null) return false;
-        if (rentalRepository.getActiveRentalByUser(user.getId()) != null) return false;
-        userRepository.remove(login);
-        return true;
     }
 
     public void deleteUser(String userIdToDelete, String requesterId) {

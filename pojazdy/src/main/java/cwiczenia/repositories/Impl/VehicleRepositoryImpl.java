@@ -24,7 +24,7 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
 
     @Override
     public void add(Vehicle vehicle) {
-        vehicles.add(vehicle);
+        vehicles.add(vehicle.copy());
         save();
     }
 
@@ -37,7 +37,7 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
     public void update(Vehicle vehicle) {
         for (int i = 0; i < vehicles.size(); i++) {
             if (vehicles.get(i).getId().equals(vehicle.getId())) {
-                vehicles.set(i, vehicle);
+                vehicles.set(i, vehicle.copy());
                 save();
                 return;
             }
@@ -47,13 +47,17 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
     @Override
     public Vehicle getVehicle(String id) {
         for (Vehicle v : vehicles)
-            if (v.getId().equals(id)) return v;
+            if (v.getId().equals(id)) return v.copy();
         return null;
     }
 
     @Override
     public List<Vehicle> getVehicles() {
-        return new ArrayList<>(vehicles);
+        List<Vehicle> copy = new ArrayList<>();
+        for (Vehicle vehicle : vehicles) {
+            copy.add(vehicle.copy());
+        }
+        return copy;
     }
 
     private void save() {
