@@ -54,21 +54,29 @@ public class JsonFileStorage<T> {
             return direct.toFile();
         }
 
-        Path current = Paths.get("").toAbsolutePath();
-        for (int i = 0; i < 4 && current != null; i++) {
-            Path candidate = current.resolve(fileName);
-            if (candidate.toFile().exists()) {
-                return candidate.toFile();
+        Path moduleDir = findModuleDir(Paths.get("").toAbsolutePath());
+        if (moduleDir != null) {
+            return moduleDir.resolve(fileName).toFile();
+        }
+
+        return direct.toFile();
+    }
+
+    private Path findModuleDir(Path start) {
+        Path current = start;
+        for (int i = 0; i < 6 && current != null; i++) {
+            if (current.resolve("pom.xml").toFile().exists()) {
+                return current;
             }
 
-            Path moduleCandidate = current.resolve("pojazdy").resolve(fileName);
-            if (moduleCandidate.toFile().exists()) {
-                return moduleCandidate.toFile();
+            Path nestedModule = current.resolve("pojazdy");
+            if (nestedModule.resolve("pom.xml").toFile().exists()) {
+                return nestedModule;
             }
 
             current = current.getParent();
         }
 
-        return direct.toFile();
+        return null;
     }
 }
