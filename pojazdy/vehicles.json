@@ -35,4 +35,40 @@
   "attributes" : {
     "seats" : 7
   }
+}, {
+  "id" : "a7beeb1c-3cda-4204-aef0-52defba02ab0",
+  "category" : "Car",
+  "brand" : "Toyota",
+  "model" : "Corolla",
+  "year" : 2020,
+  "plate" : "LU12345",
+  "price" : 150.0,
+  "rented" : false,
+  "attributes" : {
+    "fuelType" : "petrol"
+  }
+}, {
+  "id" : "2f79266b-12c5-4bc5-b9dd-6e7012ce1a4a",
+  "category" : "Car",
+  "brand" : "Toyota",
+  "model" : "Corolla",
+  "year" : 2020,
+  "plate" : "LU12345",
+  "price" : 150.0,
+  "rented" : false,
+  "attributes" : {
+    "fuelType" : "."
+  }
+}, {
+  "id" : "6057bd76-a8c9-4de9-89df-d268c67e3414",
+  "category" : "Car",
+  "brand" : "test",
+  "model" : "test",
+  "year" : 2020,
+  "plate" : "1",
+  "price" : 1.0,
+  "rented" : false,
+  "attributes" : {
+    "fuelType" : "0"
+  }
 } ]

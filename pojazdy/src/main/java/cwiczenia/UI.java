@@ -3,7 +3,6 @@ package cwiczenia;
 import cwiczenia.models.Rental;
 import cwiczenia.models.User;
 import cwiczenia.models.Vehicle;
-import cwiczenia.models.VehicleAttributeLabels;
 import cwiczenia.models.VehicleCategoryConfig;
 import cwiczenia.services.AuthService;
 import cwiczenia.services.RentalService;
@@ -154,7 +153,7 @@ public class UI {
 
         System.out.println("Dostępne kategorie:");
         categories.forEach(c -> System.out.println("  - " + c.getCategory()
-                + " (atrybuty: " + VehicleAttributeLabels.formatAttributeLabels(c.getAttributes()) + ")"));
+                + " (atrybuty: " + c.getAttributes() + ")"));
 
         try {
             String categoryName = readText("Podaj kategorię: ");
@@ -330,12 +329,11 @@ public class UI {
     }
 
     private Object readAttributeValue(String attrName, String attrType) {
-        String label = VehicleAttributeLabels.displayLabel(attrName);
         return switch (attrType.toLowerCase()) {
-            case "string"  -> readText(label + " (tekst): ");
-            case "number"  -> readDouble(label + " (liczba): ");
-            case "boolean" -> readBoolean(label + " (true/false): ");
-            case "integer" -> readInt(label + " (liczba całkowita): ");
+            case "string"  -> readText(attrName + " (tekst): ");
+            case "number"  -> readDouble(attrName + " (liczba): ");
+            case "boolean" -> readBoolean(attrName + " (true/false): ");
+            case "integer" -> readInt(attrName + " (liczba całkowita): ");
             default -> throw new IllegalArgumentException("Nieznany typ atrybutu: " + attrType);
         };
     }

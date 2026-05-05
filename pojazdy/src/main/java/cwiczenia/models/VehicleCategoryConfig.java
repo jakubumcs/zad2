@@ -14,6 +14,10 @@ public class VehicleCategoryConfig {
 
     public VehicleCategoryConfig() {}
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public VehicleCategoryConfig(String category, Map<String, String> attributes) {
         this.category = category;
         this.attributes = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
@@ -27,15 +31,37 @@ public class VehicleCategoryConfig {
     }
 
     public void setAttributes(Map<String, String> attributes) {
-        this.attributes = attributes == null ? new HashMap<>() : attributes;
+        this.attributes = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
+    }
+
+    public void addAttribute(String name, String type) {
+        attributes.put(name, type);
+    }
+
+    public void removeAttribute(String name) {
+        attributes.remove(name);
     }
 
     public VehicleCategoryConfig copy() {
         return new VehicleCategoryConfig(category, new HashMap<>(attributes));
     }
 
-    @Override
-    public String toString() {
-        return "VehicleCategoryConfig[category=" + category + " attributes=" + attributes + "]";
+    public static class Builder {
+        private String category;
+        private Map<String, String> attributes;
+
+        public Builder category(String category) {
+            this.category = category;
+            return this;
+        }
+
+        public Builder attributes(Map<String, String> attributes) {
+            this.attributes = attributes;
+            return this;
+        }
+
+        public VehicleCategoryConfig build() {
+            return new VehicleCategoryConfig(category, attributes);
+        }
     }
 }
