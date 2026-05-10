@@ -1,10 +1,11 @@
 package cwiczenia;
 
 import cwiczenia.models.User;
-import cwiczenia.repositories.Impl.RentalRepository;
-import cwiczenia.repositories.Impl.UserRepository;
 import cwiczenia.repositories.Impl.VehicleCategoryConfigRepository;
-import cwiczenia.repositories.Impl.VehicleRepositoryImpl;
+import cwiczenia.repositories.IRentalRepository;
+import cwiczenia.repositories.IUserRepository;
+import cwiczenia.repositories.IVehicleRepository;
+import cwiczenia.repositories.RepositoryFactory;
 import cwiczenia.services.AuthService;
 import cwiczenia.services.RentalService;
 import cwiczenia.services.UserService;
@@ -15,10 +16,12 @@ import cwiczenia.services.VehicleValidator;
 public class app {
 
     public static void main(String[] args) {
+        String mode = args.length > 0 ? args[0] : "json";
+        String dbUrl = System.getenv("DATABASE_URL");
 
-        UserRepository userRepo = new UserRepository();
-        VehicleRepositoryImpl vehicleRepo = new VehicleRepositoryImpl();
-        RentalRepository rentalRepo = new RentalRepository();
+        IUserRepository userRepo = RepositoryFactory.createUserRepository(mode, dbUrl);
+        IVehicleRepository vehicleRepo = RepositoryFactory.createVehicleRepository(mode, dbUrl);
+        IRentalRepository rentalRepo = RepositoryFactory.createRentalRepository(mode, dbUrl);
         VehicleCategoryConfigRepository categoryConfigRepo = new VehicleCategoryConfigRepository();
 
         if (userRepo.getUser("admin") == null) {
