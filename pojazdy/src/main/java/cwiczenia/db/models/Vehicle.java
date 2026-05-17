@@ -1,22 +1,57 @@
 package cwiczenia.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table(name = "vehicle")
 public class Vehicle {
 
+    @Id
     private String id;
+
+    @Column(nullable = false)
     private String category;
+
+    @Column(nullable = false)
     private String brand;
+
+    @Column(nullable = false)
     private String model;
+
+    @Column(nullable = false)
     private int year;
+
+    @Column(nullable = false, unique = true)
     private String plate;
+
+    @Column(nullable = false)
     private double price;
+
+    @Column(nullable = false)
     private boolean rented;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "vehicle_attribute", joinColumns = @JoinColumn(name = "vehicle_id"))
+    @MapKeyColumn(name = "attr_key")
+    @Column(name = "attr_value")
+    private Map<String, String> storedAttributes = new HashMap<>();
+
+    @Transient
     private Map<String, Object> attributes = new HashMap<>();
 
     public Vehicle() {}
@@ -34,6 +69,8 @@ public class Vehicle {
         this.plate = plate;
         this.price = price;
         this.rented = false;
+        this.storedAttributes = new HashMap<>();
+        this.attributes = new HashMap<>();
     }
 
     public Vehicle(String id, String category, String brand, String model, int year,
@@ -46,7 +83,7 @@ public class Vehicle {
         this.plate = plate;
         this.price = price;
         this.rented = rented;
-        this.attributes = attributes != null ? attributes : new HashMap<>();
+        setAttributes(attributes);
     }
 
     public String getId() { return id; }
@@ -57,7 +94,14 @@ public class Vehicle {
     public String getPlate() { return plate; }
     public double getPrice() { return price; }
     public boolean isRented() { return rented; }
-    public Map<String, Object> getAttributes() { return attributes; }
+    public Map<String, Object> getAttributes() {
+        if ((attributes == null || attributes.isEmpty()) && storedAttributes != null && !storedAttributes.isEmpty()) {
+            attributes = new HashMap<>(storedAttributes);
+        }
+        return attributes;
+    }
+
+    public Map<String, String> getStoredAttributes() { return storedAttributes; }
 
     public void setId(String id) { this.id = id; }
     public void setCategory(String category) { this.category = category; }
@@ -67,18 +111,27 @@ public class Vehicle {
     public void setPlate(String plate) { this.plate = plate; }
     public void setPrice(double price) { this.price = price; }
     public void setRented(boolean rented) { this.rented = rented; }
-    public void setAttributes(Map<String, Object> attributes) { this.attributes = attributes; }
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes != null ? new HashMap<>(attributes) : new HashMap<>();
+        this.storedAttributes = new HashMap<>();
+        if (attributes != null) {
+            attributes.forEach((key, value) ->
+                    this.storedAttributes.put(key, value == null ? null : String.valueOf(value)));
+        }
+    }
 
     public void addAttribute(String name, Object value) {
         this.attributes.put(name, value);
+        this.storedAttributes.put(name, value == null ? null : String.valueOf(value));
     }
 
     public Object getAttribute(String key) {
-        return attributes.get(key);
+        return getAttributes().get(key);
     }
 
     public void removeAttribute(String key) {
         attributes.remove(key);
+        storedAttributes.remove(key);
     }
 
     public Vehicle copy() {
@@ -91,7 +144,7 @@ public class Vehicle {
                 plate,
                 price,
                 rented,
-                attributes == null ? new HashMap<>() : new HashMap<>(attributes)
+                getAttributes() == null ? new HashMap<>() : new HashMap<>(getAttributes())
         );
     }
 
@@ -171,6 +224,6 @@ public class Vehicle {
     public String toString() {
         return "[" + category + "] " + brand + " " + model + " (" + year + ") rejestracja=" + plate +
                 " cena=" + price + " wypożyczony=" + rented
-                + " atrybuty=" + attributes + " id=" + id;
+                + " atrybuty=" + getAttributes() + " id=" + id;
     }
 }

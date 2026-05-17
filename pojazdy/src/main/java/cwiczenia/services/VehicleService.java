@@ -3,11 +3,12 @@ package cwiczenia.services;
 import cwiczenia.models.Vehicle;
 import cwiczenia.repositories.IRentalRepository;
 import cwiczenia.repositories.IVehicleRepository;
+import cwiczenia.services.interfaces.VehicleServiceInterface;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VehicleService {
+public class VehicleService implements VehicleServiceInterface {
 
     private final IVehicleRepository vehicleRepository;
     private final IRentalRepository rentalRepository;
@@ -21,15 +22,17 @@ public class VehicleService {
         this.vehicleValidator = vehicleValidator;
     }
 
+    @Override
     public Vehicle addVehicle(Vehicle vehicle) {
         vehicleValidator.validate(vehicle);
         vehicleRepository.add(vehicle);
         return vehicle;
     }
 
-    public boolean removeVehicle(String id) {
+    @Override
+    public void removeVehicle(String id) {
         Vehicle v = vehicleRepository.getVehicle(id);
-        if (v == null) return false;
+        if (v == null) throw new IllegalArgumentException("Nie znaleziono pojazdu o ID: " + id);
 
         if (rentalRepository.getActiveRentalByVehicle(id) != null) {
             throw new IllegalStateException(
@@ -37,23 +40,30 @@ public class VehicleService {
         }
 
         vehicleRepository.remove(id);
-        return true;
     }
 
+    @Override
     public List<Vehicle> findAllVehicles() {
         return withRentalStatus(vehicleRepository.getVehicles());
     }
 
+    @Override
     public List<Vehicle> findAvailableVehicles() {
         return withRentalStatus(vehicleRepository.getVehicles()).stream()
                 .filter(v -> rentalRepository.getActiveRentalByVehicle(v.getId()) == null)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Vehicle findById(String id) {
         Vehicle v = vehicleRepository.getVehicle(id);
         if (v == null) throw new IllegalArgumentException("Nie znaleziono pojazdu o ID: " + id);
         return withRentalStatus(v);
+    }
+
+    @Override
+    public boolean isVehicleRented(String vehicleId) {
+        return rentalRepository.getActiveRentalByVehicle(vehicleId) != null;
     }
 
     private List<Vehicle> withRentalStatus(List<Vehicle> vehicles) {

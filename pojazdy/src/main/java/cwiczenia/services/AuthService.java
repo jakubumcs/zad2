@@ -2,9 +2,12 @@ package cwiczenia.services;
 
 import cwiczenia.models.User;
 import cwiczenia.repositories.IUserRepository;
+import cwiczenia.services.interfaces.AuthServiceInterface;
 import org.mindrot.jbcrypt.BCrypt;
 
-public class AuthService {
+import java.util.Optional;
+
+public class AuthService implements AuthServiceInterface {
 
     private final IUserRepository userRepository;
 
@@ -12,19 +15,21 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public User login(String login, String password) {
+    @Override
+    public Optional<User> login(String login, String password) {
         User user = userRepository.getUser(login);
         if (user != null && BCrypt.checkpw(password, user.getPasswordHash())) {
-            return user;
+            return Optional.of(user);
         }
-        return null;
+        return Optional.empty();
     }
 
-    public User register(String login, String password) {
-        if (userRepository.getUser(login) != null) return null;
+    @Override
+    public boolean register(String login, String password) {
+        if (userRepository.getUser(login) != null) return false;
         String hash = BCrypt.hashpw(password, BCrypt.gensalt());
         User user = new User(login, hash, "USER");
         userRepository.add(user);
-        return user;
+        return true;
     }
 }

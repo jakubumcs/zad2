@@ -2,14 +2,27 @@ package cwiczenia.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
     private String id;
+
+    @Column(nullable = false, unique = true)
     private String login;
+
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
+
+    @Column(nullable = false)
     private String role;
 
     public User() {}

@@ -3,10 +3,11 @@ package cwiczenia.services;
 import cwiczenia.models.User;
 import cwiczenia.repositories.IRentalRepository;
 import cwiczenia.repositories.IUserRepository;
+import cwiczenia.services.interfaces.UserServiceInterface;
 
 import java.util.List;
 
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private final IUserRepository userRepository;
     private final IRentalRepository rentalRepository;
@@ -16,10 +17,12 @@ public class UserService {
         this.rentalRepository = rentalRepository;
     }
 
+    @Override
     public List<User> findAllUsers() {
         return userRepository.getUsers();
     }
 
+    @Override
     public User findById(String id) {
         return userRepository.getUsers().stream()
                 .filter(u -> u.getId().equals(id))

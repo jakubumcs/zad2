@@ -66,15 +66,15 @@ public class UI {
         System.out.println("=== Logowanie ===");
         String login = readText("Login: ");
         String password = readText("Hasło: ");
-        return authService.login(login, password);
+        return authService.login(login, password).orElse(null);
     }
 
     private void register() {
         System.out.println("=== Rejestracja ===");
         String login = readText("Podaj login: ");
         String password = readText("Podaj hasło: ");
-        User registered = authService.register(login, password);
-        if (registered != null) {
+        boolean registered = authService.register(login, password);
+        if (registered) {
             System.out.println("Zarejestrowano pomyślnie! Możesz się zalogować.");
         } else {
             System.out.println("Błąd rejestracji. Login jest już zajęty.");
@@ -185,8 +185,8 @@ public class UI {
         System.out.print("Podaj ID pojazdu do usunięcia: ");
         String id = scanner.nextLine().trim();
         try {
-            boolean removed = vehicleService.removeVehicle(id);
-            System.out.println(removed ? "Pojazd usunięty." : "Nie znaleziono pojazdu.");
+            vehicleService.removeVehicle(id);
+            System.out.println("Pojazd usunięty.");
         } catch (Exception e) {
             System.out.println("Błąd: " + e.getMessage());
         }

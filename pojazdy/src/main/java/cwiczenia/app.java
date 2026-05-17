@@ -1,5 +1,6 @@
 package cwiczenia;
 
+import cwiczenia.config.HibernateConfig;
 import cwiczenia.models.User;
 import cwiczenia.repositories.Impl.VehicleCategoryConfigRepository;
 import cwiczenia.repositories.IRentalRepository;
@@ -35,10 +36,16 @@ public class app {
         VehicleCategoryConfigService configService = new VehicleCategoryConfigService(categoryConfigRepo);
         VehicleValidator vehicleValidator = new VehicleValidator(configService);
         VehicleService vehicleService = new VehicleService(vehicleRepo, rentalRepo, vehicleValidator);
-        RentalService rentalService = new RentalService(vehicleRepo, rentalRepo);
+        RentalService rentalService = new RentalService(userRepo, vehicleRepo, rentalRepo);
         UserService userService = new UserService(userRepo, rentalRepo);
 
-        UI ui = new UI(authService, vehicleService, rentalService, userService, configService);
-        ui.start();
+        try {
+            UI ui = new UI(authService, vehicleService, rentalService, userService, configService);
+            ui.start();
+        } finally {
+            if ("hibernate".equalsIgnoreCase(mode)) {
+                HibernateConfig.shutdown();
+            }
+        }
     }
 }
