@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+// @Profile("jpa") – ten bean aktywny tylko przy APP_PROFILE=jpa
 @Repository
 @Profile("jpa")
 public class HibernateVehicleRepository implements IVehicleRepository {
@@ -20,7 +21,7 @@ public class HibernateVehicleRepository implements IVehicleRepository {
 
     @Override
     public void add(Vehicle vehicle) {
-        sessionManager.executeInTransaction(session -> { session.merge(vehicle); });
+        sessionManager.executeInTransaction(session -> session.merge(vehicle));
     }
 
     @Override

@@ -32,7 +32,7 @@ public class HibernateUserRepository implements IUserRepository {
 
     @Override
     public void add(User user) {
-        sessionManager.executeInTransaction(session -> { session.merge(user); });
+        sessionManager.executeInTransaction(session -> session.merge(user));
     }
 
     @Override

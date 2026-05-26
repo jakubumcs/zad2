@@ -21,7 +21,7 @@ public class HibernateRentalRepository implements IRentalRepository {
 
     @Override
     public void add(Rental rental) {
-        sessionManager.executeInTransaction(session -> { session.merge(rental); });
+        sessionManager.executeInTransaction(session -> session.merge(rental));
     }
 
     @Override
