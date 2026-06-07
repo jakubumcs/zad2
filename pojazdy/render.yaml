@@ -8,3 +8,6 @@ services:
     envVars:
       - key: APP_PROFILE
         value: json
+        jwt:
+          secret: ${JWT_SECRET:ThisIsAVeryLongSecretKeyForJWTSigningAtLeast256BitsLong!!}
+          expiration-ms: 86400000

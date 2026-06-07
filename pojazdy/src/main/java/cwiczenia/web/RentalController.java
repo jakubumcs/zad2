@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -18,6 +19,16 @@ public class RentalController {
 
     public RentalController(RentalServiceInterface rentalService) {
         this.rentalService = rentalService;
+    }
+    @PostMapping("/rent/{vehicleId}")
+    public Rental rentAuthenticated(@PathVariable String vehicleId, Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
+        return rentalService.rentVehicle(userId, vehicleId);
+    }
+    @PostMapping("/return")
+    public Rental returnAuthenticated(Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
+        return rentalService.returnVehicle(userId);
     }
 
     // GET /api/rentals → historia wszystkich wypożyczeń

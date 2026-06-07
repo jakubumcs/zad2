@@ -3,22 +3,26 @@ package cwiczenia.services;
 import cwiczenia.models.User;
 import cwiczenia.repositories.IUserRepository;
 import cwiczenia.services.interfaces.AuthServiceInterface;
-import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class AuthService implements AuthServiceInterface {
 
     private final IUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(IUserRepository userRepository) {
+    public AuthService(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Optional<User> login(String login, String password) {
         User user = userRepository.getUser(login);
-        if (user != null && BCrypt.checkpw(password, user.getPasswordHash())) {
+        if (user != null && passwordEncoder.matches(password, user.getPasswordHash())) {
             return Optional.of(user);
         }
         return Optional.empty();
@@ -27,7 +31,7 @@ public class AuthService implements AuthServiceInterface {
     @Override
     public boolean register(String login, String password) {
         if (userRepository.getUser(login) != null) return false;
-        String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+        String hash = passwordEncoder.encode(password);
         User user = new User(login, hash, "USER");
         userRepository.add(user);
         return true;
