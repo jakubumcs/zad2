@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: pojazdy-carrent
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: APP_PROFILE
+        value: json
