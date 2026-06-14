@@ -17,19 +17,13 @@ import org.springframework.context.annotation.Profile;
 import java.util.HashMap;
 import java.util.Map;
 
-// @Configuration oznacza klasę jako źródło beanów konfiguracyjnych Springa.
-// Metody z @Bean są wywoływane przez Springa i ich wyniki trafiają do kontenera jako beany.
 @Configuration
-// @Profile("jpa") – cała ta konfiguracja aktywna tylko przy APP_PROFILE=jpa
 @Profile("jpa")
 public class HibernateSpringConfig {
 
-    // @Value wstrzykuje wartość zmiennej środowiskowej DB_URL z application-jpa.yml
     @Value("${spring.datasource.url}")
     private String dbUrl;
 
-    // @Bean mówi Springowi: "ta metoda zwraca obiekt, który ma być beanem w kontenerze".
-    // Spring wywoła tę metodę raz i zachowa wynik jako singleton.
     @Bean
     public SessionFactory sessionFactory() {
         String normalizedUrl = normalizeJdbcUrl(dbUrl);
@@ -59,8 +53,6 @@ public class HibernateSpringConfig {
         }
     }
 
-    // HibernateSessionManager jest zależnością repozytoriów JPA.
-    // Spring wstrzyknie sessionFactory() do tej metody automatycznie.
     @Bean
     public HibernateSessionManager hibernateSessionManager(SessionFactory sessionFactory) {
         return new HibernateSessionManagerImpl(sessionFactory);

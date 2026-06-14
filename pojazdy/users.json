@@ -8,4 +8,14 @@
   "login" : "jakub",
   "passwordHash" : "$2a$10$few6i/.XXPST2kYpDaMeTOQUFn.jzATKMVBfA.r/hGchmVvrIgExm",
   "role" : "USER"
+}, {
+  "id" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
+  "login" : "jakub2",
+  "passwordHash" : "$2a$10$5FvU1onKPSlmRWMHetE3CuumhmBlrqTOq1soNybUAFgAf2GzDr7AK",
+  "role" : "USER"
+}, {
+  "id" : "d670ec81-3729-4e3e-9098-c45aea35cd50",
+  "login" : "testuser",
+  "passwordHash" : "$2a$10$QHxuOJnzW.D7lO7zlQTfdubb9lF//ArJnpYElN.lXaU4HV6eoH/Xy",
+  "role" : "USER"
 } ]

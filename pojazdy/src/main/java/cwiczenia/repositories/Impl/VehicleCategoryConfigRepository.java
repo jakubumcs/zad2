@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// Repozytorium kategorii nie ma @Profile – kategorie zawsze czytamy z pliku JSON,
-// niezależnie od profilu (jdbc/jpa/json). Konfiguracja kategorii nie jest w bazie danych.
 @Repository
 public class VehicleCategoryConfigRepository implements IVehicleCategoryConfigRepository {
 

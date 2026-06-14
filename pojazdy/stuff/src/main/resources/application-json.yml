@@ -1,8 +1,0 @@
-spring:
-  autoconfigure:
-    exclude:
-      # Profil json nie używa bazy danych - wyłączamy całą infrastrukturę bazodanową
-      # żeby Spring nie próbował tworzyć połączenia z bazą przy starcie
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration

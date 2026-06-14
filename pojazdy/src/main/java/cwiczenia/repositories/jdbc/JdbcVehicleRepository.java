@@ -16,14 +16,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// @Profile("jdbc") – ten bean istnieje tylko gdy APP_PROFILE=jdbc
-// DataSource jest wstrzykiwany przez Springa – pochodzi z konfiguracji w application-jdbc.yml
 @Repository
 @Profile("jdbc")
 public class JdbcVehicleRepository implements IVehicleRepository {
 
-    // DataSource to fabryka połączeń z bazą danych dostarczana przez Spring.
-    // Spring automatycznie tworzy i zarządza pulą połączeń na podstawie application-jdbc.yml.
     private final DataSource dataSource;
 
     public JdbcVehicleRepository(DataSource dataSource) {

@@ -19,13 +19,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    // GET /api/users → lista wszystkich użytkowników
     @GetMapping
     public List<User> list() {
         return userService.findAllUsers();
     }
 
-    // GET /api/users/{id} → jeden użytkownik po ID
     @GetMapping("/{id}")
     public User get(@PathVariable String id) {
         return userService.findById(id);

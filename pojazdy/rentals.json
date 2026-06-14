@@ -1,31 +1,31 @@
 [ {
-  "id" : "66af921b-ea65-459d-bf84-3d9112e71757",
-  "userId" : "caab7ee4-1714-4ca8-bb36-de0a57853c31",
-  "vehicleId" : "a98a0b2b-541d-4629-a11f-3dae492806e3",
-  "rentDateTime" : [ 2026, 3, 30, 14, 32, 36, 397739400 ],
-  "returnDateTime" : [ 2026, 3, 30, 14, 32, 48, 477041300 ]
-}, {
-  "id" : "2c3c80c8-78a5-4903-ba52-ea4b861bc3ac",
-  "userId" : "6dd7e2e5-f819-4fdf-90e0-3a7e079de4f1",
-  "vehicleId" : "65b0cdb4-58c7-419a-97bf-811af7f3fe41",
-  "rentDateTime" : [ 2026, 4, 26, 21, 6, 12, 889559300 ],
-  "returnDateTime" : [ 2026, 4, 28, 9, 46, 4, 608143700 ]
-}, {
-  "id" : "e3472119-4431-408f-aa4e-d56170a7006c",
-  "userId" : "c61173e3-f8cf-4c62-933e-4354325a3793",
-  "vehicleId" : "a98a0b2b-541d-4629-a11f-3dae492806e3",
-  "rentDateTime" : [ 2026, 4, 28, 9, 41, 5, 746760400 ],
-  "returnDateTime" : [ 2026, 4, 28, 9, 41, 7, 807958600 ]
-}, {
-  "id" : "4aaf7241-5b25-40ea-aa51-e98a55e90d6d",
-  "userId" : "c771f4f4-281a-45ac-8a72-ce40ccfa398c",
-  "vehicleId" : "65b0cdb4-58c7-419a-97bf-811af7f3fe41",
-  "rentDateTime" : [ 2026, 5, 5, 9, 49, 59, 60862800 ],
-  "returnDateTime" : [ 2026, 5, 5, 9, 50, 5, 278759500 ]
-}, {
-  "id" : "235549ea-3b40-40e0-92b4-23128a2edbb3",
-  "userId" : "cd3afc75-8ce1-4fd5-9b6a-fd0590d1b18f",
-  "vehicleId" : "65b0cdb4-58c7-419a-97bf-811af7f3fe41",
-  "rentDateTime" : [ 2026, 5, 5, 12, 52, 6, 855805000 ],
-  "returnDateTime" : null
+  "id" : "963165bb-edb2-4635-baf4-2d9fdaf4482e",
+  "user" : {
+    "id" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
+    "login" : "jakub2",
+    "passwordHash" : "$2a$10$5FvU1onKPSlmRWMHetE3CuumhmBlrqTOq1soNybUAFgAf2GzDr7AK",
+    "role" : "USER"
+  },
+  "vehicle" : {
+    "id" : "629ba273-2f15-4976-96b0-305fd009fb6d",
+    "category" : "Motorcycle",
+    "brand" : "Honda",
+    "model" : "CBR1000RR",
+    "year" : 2020,
+    "plate" : "Lu321",
+    "price" : 200.0,
+    "rented" : false,
+    "storedAttributes" : {
+      "licence" : "A",
+      "fuelType" : "Benzyna"
+    },
+    "attributes" : {
+      "fuelType" : "Benzyna",
+      "licence" : "A"
+    }
+  },
+  "rentDateTime" : [ 2026, 6, 13, 11, 37, 0, 584358200 ],
+  "returnDateTime" : [ 2026, 6, 13, 11, 37, 0, 675901800 ],
+  "userId" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
+  "vehicleId" : "629ba273-2f15-4976-96b0-305fd009fb6d"
 } ]

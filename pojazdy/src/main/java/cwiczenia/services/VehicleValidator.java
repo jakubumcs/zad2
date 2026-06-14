@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-// @Component oznacza klasę jako ogólny komponent Springa (nie serwis, nie repozytorium).
-// Spring tworzy jeden egzemplarz tej klasy i może go wstrzyknąć do VehicleService.
 @Component
 public class VehicleValidator {
 

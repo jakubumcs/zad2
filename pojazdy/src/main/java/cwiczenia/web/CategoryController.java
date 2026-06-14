@@ -19,13 +19,11 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    // GET /api/categories → wszystkie dostępne kategorie pojazdów
     @GetMapping
     public List<VehicleCategoryConfig> list() {
         return categoryService.findAllCategories();
     }
 
-    // GET /api/categories/{category} → konfiguracja jednej kategorii (np. /api/categories/Car)
     @GetMapping("/{category}")
     public VehicleCategoryConfig get(@PathVariable String category) {
         return categoryService.getByCategory(category);
