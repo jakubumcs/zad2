@@ -1,14 +1,15 @@
 spring:
   datasource:
-    # DB_URL to zmienna środowiskowa z connection stringiem do Neon Tech (PostgreSQL)
     url: ${DB_URL}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      # update = Hibernate automatycznie tworzy/aktualizuje tabele na podstawie encji
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
