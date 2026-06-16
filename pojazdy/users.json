@@ -1,16 +1,16 @@
 [ {
   "id" : "8a2ae9bf-fa64-49a8-8a38-7a3944baac65",
   "login" : "admin",
-  "passwordHash" : "$2a$10$qHNLPz41XI0lUQPlQXwa0ejc6xQy8Pe9un5hb8JciBZqEv2TyXpP.",
+  "passwordHash" : "$2a$10$6b7FDjqu.uSwn19ZL8C8UeZBJnIhKhsHRbG/hl/bkzFXJXzkb/eWK",
   "role" : "ADMIN"
 }, {
   "id" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
   "login" : "jakub2",
-  "passwordHash" : "$2a$10$kLYckfBug7RLvu7cqOurIOUhpjxJRGXiRh9bywc/ZfmcaBtfHk.wa",
+  "passwordHash" : "$2a$10$6qwLm0FfdCTjUzSDwFd.qumcj9xKbJVLCeROTMDxol2X1P7/TtSwq",
   "role" : "USER"
 }, {
-  "id" : "d5966995-60a1-44db-89ec-83ed8cdaf691",
+  "id" : "499f3f5a-f285-49a8-aa04-77abbcfeb7b0",
   "login" : "testuser",
-  "passwordHash" : "$2a$10$opa1uTNkKUb5vywQBjIuAubLMX5b7SX3a18KlZYmpr7jEFGGoQsZe",
+  "passwordHash" : "$2a$10$olc/JCzJ51CRWrQgBHxn0OT3QltaKN.g6D0MgKaTVJKvOWRk6K7Fm",
   "role" : "USER"
 } ]

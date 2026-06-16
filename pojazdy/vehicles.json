@@ -61,7 +61,7 @@
     "fuelType" : "petrol"
   }
 }, {
-  "id" : "95be2917-253c-4eea-a06d-8a2f602d6b1a",
+  "id" : "ef5b97cf-8610-49ae-ba4d-a12ea528e7f9",
   "category" : "Motorcycle",
   "brand" : "Yamaha",
   "model" : "R1",
@@ -78,7 +78,7 @@
     "licence" : "A"
   }
 }, {
-  "id" : "067f93c7-6147-4616-b38a-8c6a749d7a4f",
+  "id" : "23a96dbe-950b-4ee6-9e1b-0d220cb90ec4",
   "category" : "Bus",
   "brand" : "Mercedes",
   "model" : "Sprinter",
