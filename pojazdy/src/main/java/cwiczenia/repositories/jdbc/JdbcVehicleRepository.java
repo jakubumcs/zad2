@@ -89,6 +89,28 @@ public class JdbcVehicleRepository implements IVehicleRepository {
     }
 
     @Override
+    public void removeAll() {
+        String deleteAttributesSql = "DELETE FROM vehicle_attribute";
+        String deleteVehiclesSql = "DELETE FROM vehicle";
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement deleteAttributesStatement = connection.prepareStatement(deleteAttributesSql);
+                 PreparedStatement deleteVehiclesStatement = connection.prepareStatement(deleteVehiclesSql)) {
+                deleteAttributesStatement.executeUpdate();
+                deleteVehiclesStatement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Failed to remove vehicles", e);
+        }
+    }
+
+    @Override
     public Vehicle getVehicle(String id) {
         String sql = "SELECT id, category, brand, model, year, plate, price, rented FROM vehicle WHERE id = ?";
         try (Connection connection = dataSource.getConnection();

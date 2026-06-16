@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.hibernate.Session;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Repository
 @Profile("jpa")
@@ -44,6 +45,13 @@ public class HibernateUserRepository implements IUserRepository {
             User user = findByLogin(session, login);
             if (user != null) session.remove(user);
         });
+    }
+
+    @Override
+    public void removeAll() {
+        sessionManager.executeInTransaction((Consumer<Session>) session ->
+                session.createMutationQuery("DELETE FROM User").executeUpdate()
+        );
     }
 
     private User findByLogin(Session session, String login) {

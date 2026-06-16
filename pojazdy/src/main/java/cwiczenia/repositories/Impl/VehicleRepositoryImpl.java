@@ -38,6 +38,12 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
     }
 
     @Override
+    public void removeAll() {
+        vehicles.clear();
+        save();
+    }
+
+    @Override
     public void update(Vehicle vehicle) {
         for (int i = 0; i < vehicles.size(); i++) {
             if (vehicles.get(i).getId() != null && vehicles.get(i).getId().equals(vehicle.getId())) {

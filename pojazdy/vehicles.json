@@ -46,13 +46,13 @@
     "seats" : 7
   }
 }, {
-  "id" : "7a72d87d-0a39-4c0d-bf19-4c07aef9270c",
+  "id" : "a7beeb1c-3cda-4204-aef0-52defba02ab0",
   "category" : "Car",
-  "brand" : "BMW",
-  "model" : "M3",
-  "year" : 2024,
-  "plate" : "LU999",
-  "price" : 500.0,
+  "brand" : "Toyota",
+  "model" : "Corolla",
+  "year" : 2020,
+  "plate" : "LU12345",
+  "price" : 150.0,
   "rented" : false,
   "storedAttributes" : {
     "fuelType" : "petrol"
@@ -61,7 +61,7 @@
     "fuelType" : "petrol"
   }
 }, {
-  "id" : "33c36e7b-11ab-4b5e-921f-12864b6b0f30",
+  "id" : "95be2917-253c-4eea-a06d-8a2f602d6b1a",
   "category" : "Motorcycle",
   "brand" : "Yamaha",
   "model" : "R1",
@@ -78,7 +78,7 @@
     "licence" : "A"
   }
 }, {
-  "id" : "909ffa79-8409-45b3-819e-4892051c962b",
+  "id" : "067f93c7-6147-4616-b38a-8c6a749d7a4f",
   "category" : "Bus",
   "brand" : "Mercedes",
   "model" : "Sprinter",

@@ -44,6 +44,12 @@ public class RentalRepository implements IRentalRepository {
     }
 
     @Override
+    public void removeAll() {
+        rentals.clear();
+        save();
+    }
+
+    @Override
     public Rental getActiveRentalByUser(String userId) {
         for (Rental r : rentals)
             if (r.getUserId().equals(userId) && r.isActive()) return r;

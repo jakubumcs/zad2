@@ -49,6 +49,17 @@ public class JdbcRentalRepository implements IRentalRepository {
     public void update(Rental rental) { add(rental); }
 
     @Override
+    public void removeAll() {
+        String sql = "DELETE FROM rental";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Failed to remove rentals", e);
+        }
+    }
+
+    @Override
     public Rental getActiveRentalByUser(String userId) {
         String sql = """
                 SELECT id, vehicle_id, user_id, rent_date_time, return_date_time

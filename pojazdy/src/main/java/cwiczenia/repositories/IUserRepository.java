@@ -10,4 +10,5 @@ public interface IUserRepository {
     void add(User user);
     void update(User user);
     void remove(String login);
+    void removeAll();
 }

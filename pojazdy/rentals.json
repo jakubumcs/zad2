@@ -1,9 +1,9 @@
 [ {
-  "id" : "963165bb-edb2-4635-baf4-2d9fdaf4482e",
+  "id" : "fd10ba04-3c07-44ce-b757-38bb7481e70d",
   "user" : {
     "id" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
     "login" : "jakub2",
-    "passwordHash" : "$2a$10$5FvU1onKPSlmRWMHetE3CuumhmBlrqTOq1soNybUAFgAf2GzDr7AK",
+    "passwordHash" : "$2a$10$kLYckfBug7RLvu7cqOurIOUhpjxJRGXiRh9bywc/ZfmcaBtfHk.wa",
     "role" : "USER"
   },
   "vehicle" : {
@@ -24,8 +24,36 @@
       "licence" : "A"
     }
   },
-  "rentDateTime" : [ 2026, 6, 13, 11, 37, 0, 584358200 ],
-  "returnDateTime" : [ 2026, 6, 13, 11, 37, 0, 675901800 ],
-  "userId" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
-  "vehicleId" : "629ba273-2f15-4976-96b0-305fd009fb6d"
+  "rentDateTime" : [ 2026, 6, 16, 7, 13, 58, 571372000 ],
+  "returnDateTime" : [ 2026, 6, 16, 7, 13, 58, 609400000 ],
+  "vehicleId" : "629ba273-2f15-4976-96b0-305fd009fb6d",
+  "userId" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734"
+}, {
+  "id" : "25d6cef0-c508-4e87-a888-475d31e8bec9",
+  "user" : {
+    "id" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
+    "login" : "jakub2",
+    "passwordHash" : "$2a$10$kLYckfBug7RLvu7cqOurIOUhpjxJRGXiRh9bywc/ZfmcaBtfHk.wa",
+    "role" : "USER"
+  },
+  "vehicle" : {
+    "id" : "a7beeb1c-3cda-4204-aef0-52defba02ab0",
+    "category" : "Car",
+    "brand" : "Toyota",
+    "model" : "Corolla",
+    "year" : 2020,
+    "plate" : "LU12345",
+    "price" : 150.0,
+    "rented" : false,
+    "storedAttributes" : {
+      "fuelType" : "petrol"
+    },
+    "attributes" : {
+      "fuelType" : "petrol"
+    }
+  },
+  "rentDateTime" : [ 2026, 6, 16, 7, 13, 58, 689418200 ],
+  "returnDateTime" : [ 2026, 6, 16, 7, 13, 58, 724147000 ],
+  "vehicleId" : "a7beeb1c-3cda-4204-aef0-52defba02ab0",
+  "userId" : "dfd103d3-19fa-40be-a3bd-ffaac9e57734"
 } ]

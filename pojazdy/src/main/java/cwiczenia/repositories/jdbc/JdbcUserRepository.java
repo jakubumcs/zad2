@@ -89,6 +89,17 @@ public class JdbcUserRepository implements IUserRepository {
         }
     }
 
+    @Override
+    public void removeAll() {
+        String sql = "DELETE FROM users";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Failed to remove users", e);
+        }
+    }
+
     private User mapUser(ResultSet resultSet) throws SQLException {
         return new User(
                 resultSet.getString("id"),

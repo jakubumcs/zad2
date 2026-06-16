@@ -61,6 +61,12 @@ public class UserRepository implements IUserRepository {
         if (users.removeIf(u -> u.getLogin().equals(login))) save();
     }
 
+    @Override
+    public void removeAll() {
+        users.clear();
+        save();
+    }
+
     private void save() { storage.save(users); }
     private void load() { users.clear(); users.addAll(storage.load()); }
 }

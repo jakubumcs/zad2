@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.hibernate.Session;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Repository
 @Profile("jpa")
@@ -26,6 +27,13 @@ public class HibernateRentalRepository implements IRentalRepository {
 
     @Override
     public void update(Rental rental) { add(rental); }
+
+    @Override
+    public void removeAll() {
+        sessionManager.executeInTransaction((Consumer<Session>) session ->
+                session.createMutationQuery("DELETE FROM Rental").executeUpdate()
+        );
+    }
 
     @Override
     public Rental getActiveRentalByUser(String userId) {

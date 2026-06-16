@@ -3,10 +3,12 @@ package cwiczenia.repositories.hibernate;
 import cwiczenia.models.Vehicle;
 import cwiczenia.repositories.IVehicleRepository;
 import cwiczenia.repositories.hibernate.session.HibernateSessionManager;
+import org.hibernate.Session;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Repository
 @Profile("jpa")
@@ -29,6 +31,13 @@ public class HibernateVehicleRepository implements IVehicleRepository {
             Vehicle vehicle = session.find(Vehicle.class, id);
             if (vehicle != null) session.remove(vehicle);
         });
+    }
+
+    @Override
+    public void removeAll() {
+        sessionManager.executeInTransaction((Consumer<Session>) session ->
+                session.createMutationQuery("DELETE FROM Vehicle").executeUpdate()
+        );
     }
 
     @Override
