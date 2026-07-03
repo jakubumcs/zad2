@@ -9,11 +9,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.springframework.beans.factory.annotation.Value;
+import org.hibernate.cfg.Environment;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,20 +22,17 @@ import java.util.Map;
 @Profile("jpa")
 public class HibernateSpringConfig {
 
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
-
     @Bean
-    public SessionFactory sessionFactory() {
-        String normalizedUrl = normalizeJdbcUrl(dbUrl);
-
+    public SessionFactory sessionFactory(DataSource dataSource) {
         Map<String, Object> settings = new HashMap<>();
-        settings.put("hibernate.connection.url", normalizedUrl);
-        settings.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-        settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        settings.put("hibernate.hbm2ddl.auto", "update");
-        settings.put("hibernate.show_sql", "false");
-        settings.put("hibernate.format_sql", "true");
+        // Reuse the Spring-managed (HikariCP pooled) DataSource instead of having
+        // Hibernate open its own raw, unpooled JDBC connections. This avoids a second,
+        // competing connection source hitting Neon's connection limit at startup.
+        settings.put(Environment.DATASOURCE, dataSource);
+        settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
+        settings.put(Environment.HBM2DDL_AUTO, "update");
+        settings.put(Environment.SHOW_SQL, "false");
+        settings.put(Environment.FORMAT_SQL, "true");
 
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .applySettings(settings)
@@ -56,11 +54,5 @@ public class HibernateSpringConfig {
     @Bean
     public HibernateSessionManager hibernateSessionManager(SessionFactory sessionFactory) {
         return new HibernateSessionManagerImpl(sessionFactory);
-    }
-
-    private String normalizeJdbcUrl(String url) {
-        if (url.startsWith("jdbc:")) return url;
-        if (url.startsWith("postgresql://") || url.startsWith("postgres://")) return "jdbc:" + url;
-        return url;
     }
 }

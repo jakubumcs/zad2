@@ -3,6 +3,7 @@ package cwiczenia.repositories.jdbc;
 import cwiczenia.models.Vehicle;
 import cwiczenia.repositories.IVehicleRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -46,11 +47,12 @@ public class JdbcVehicleRepository implements IVehicleRepository {
                 VALUES (?, ?, ?)
                 """;
 
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try {
             try (PreparedStatement vehicleStatement = connection.prepareStatement(vehicleSql);
                  PreparedStatement deleteAttributesStatement = connection.prepareStatement(deleteAttributesSql);
                  PreparedStatement insertAttributeStatement = connection.prepareStatement(insertAttributeSql)) {
+
                 fillVehicleStatement(vehicleStatement, vehicle);
                 vehicleStatement.executeUpdate();
 
@@ -64,27 +66,25 @@ public class JdbcVehicleRepository implements IVehicleRepository {
                     insertAttributeStatement.addBatch();
                 }
                 insertAttributeStatement.executeBatch();
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-                throw e;
-            } finally {
-                connection.setAutoCommit(true);
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to save vehicle: " + vehicle.getId(), e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public void remove(String id) {
         String sql = "DELETE FROM vehicle WHERE id = ?";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to remove vehicle: " + id, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -92,29 +92,23 @@ public class JdbcVehicleRepository implements IVehicleRepository {
     public void removeAll() {
         String deleteAttributesSql = "DELETE FROM vehicle_attribute";
         String deleteVehiclesSql = "DELETE FROM vehicle";
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            try (PreparedStatement deleteAttributesStatement = connection.prepareStatement(deleteAttributesSql);
-                 PreparedStatement deleteVehiclesStatement = connection.prepareStatement(deleteVehiclesSql)) {
-                deleteAttributesStatement.executeUpdate();
-                deleteVehiclesStatement.executeUpdate();
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-                throw e;
-            } finally {
-                connection.setAutoCommit(true);
-            }
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement deleteAttributesStatement = connection.prepareStatement(deleteAttributesSql);
+             PreparedStatement deleteVehiclesStatement = connection.prepareStatement(deleteVehiclesSql)) {
+            deleteAttributesStatement.executeUpdate();
+            deleteVehiclesStatement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to remove vehicles", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public Vehicle getVehicle(String id) {
         String sql = "SELECT id, category, brand, model, year, plate, price, rented FROM vehicle WHERE id = ?";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (!resultSet.next()) return null;
@@ -124,6 +118,8 @@ public class JdbcVehicleRepository implements IVehicleRepository {
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch vehicle: " + id, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -131,8 +127,8 @@ public class JdbcVehicleRepository implements IVehicleRepository {
     public List<Vehicle> getVehicles() {
         String sql = "SELECT id, category, brand, model, year, plate, price, rented FROM vehicle";
         List<Vehicle> vehicles = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) vehicles.add(mapVehicle(resultSet));
             Map<String, Map<String, Object>> attributesByVehicleId = loadAttributesForVehicles(connection);
@@ -142,6 +138,8 @@ public class JdbcVehicleRepository implements IVehicleRepository {
             return vehicles;
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch vehicles", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 

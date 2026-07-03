@@ -3,6 +3,7 @@ package cwiczenia.repositories.jdbc;
 import cwiczenia.models.User;
 import cwiczenia.repositories.IUserRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -26,8 +27,8 @@ public class JdbcUserRepository implements IUserRepository {
     @Override
     public User getUser(String login) {
         String sql = "SELECT id, login, password_hash, role FROM users WHERE login = ?";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, login);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) return mapUser(resultSet);
@@ -35,6 +36,8 @@ public class JdbcUserRepository implements IUserRepository {
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch user by login: " + login, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -42,13 +45,15 @@ public class JdbcUserRepository implements IUserRepository {
     public List<User> getUsers() {
         String sql = "SELECT id, login, password_hash, role FROM users";
         List<User> users = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) users.add(mapUser(resultSet));
             return users;
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch users", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -62,8 +67,8 @@ public class JdbcUserRepository implements IUserRepository {
                 password_hash = EXCLUDED.password_hash,
                 role = EXCLUDED.role
                 """;
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, user.getId());
             statement.setString(2, user.getLogin());
             statement.setString(3, user.getPasswordHash());
@@ -71,6 +76,8 @@ public class JdbcUserRepository implements IUserRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to save user: " + user.getLogin(), e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -80,23 +87,27 @@ public class JdbcUserRepository implements IUserRepository {
     @Override
     public void remove(String login) {
         String sql = "DELETE FROM users WHERE login = ?";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, login);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to remove user: " + login, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public void removeAll() {
         String sql = "DELETE FROM users";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to remove users", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 

@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, String>> conflict(IllegalStateException e) {
+        e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(Map.of("error", e.getMessage()));

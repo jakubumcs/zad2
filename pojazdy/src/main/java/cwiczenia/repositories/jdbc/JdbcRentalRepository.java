@@ -3,6 +3,7 @@ package cwiczenia.repositories.jdbc;
 import cwiczenia.models.Rental;
 import cwiczenia.repositories.IRentalRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -28,20 +29,22 @@ public class JdbcRentalRepository implements IRentalRepository {
     @Override
     public void add(Rental rental) {
         String sql = """
-                INSERT INTO rental (id, vehicle_id, user_id, rent_date_time, return_date_time)
+                INSERT INTO rental (id, vehicle_id, user_id, rentdatetime, returndatetime)
                 VALUES (?, ?, ?, ?, ?)
                 ON CONFLICT (id) DO UPDATE
                 SET vehicle_id = EXCLUDED.vehicle_id,
                     user_id = EXCLUDED.user_id,
-                    rent_date_time = EXCLUDED.rent_date_time,
-                    return_date_time = EXCLUDED.return_date_time
+                    rentdatetime = EXCLUDED.rentdatetime,
+                    returndatetime = EXCLUDED.returndatetime
                 """;
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             fillRentalStatement(statement, rental);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to save rental: " + rental.getId(), e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -51,22 +54,24 @@ public class JdbcRentalRepository implements IRentalRepository {
     @Override
     public void removeAll() {
         String sql = "DELETE FROM rental";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to remove rentals", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public Rental getActiveRentalByUser(String userId) {
         String sql = """
-                SELECT id, vehicle_id, user_id, rent_date_time, return_date_time
-                FROM rental WHERE user_id = ? AND return_date_time IS NULL
+                SELECT id, vehicle_id, user_id, rentdatetime, returndatetime
+                FROM rental WHERE user_id = ? AND returndatetime IS NULL
                 """;
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) return mapRental(resultSet);
@@ -74,17 +79,19 @@ public class JdbcRentalRepository implements IRentalRepository {
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch active rental for user: " + userId, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public Rental getActiveRentalByVehicle(String vehicleId) {
         String sql = """
-                SELECT id, vehicle_id, user_id, rent_date_time, return_date_time
-                FROM rental WHERE vehicle_id = ? AND return_date_time IS NULL
+                SELECT id, vehicle_id, user_id, rentdatetime, returndatetime
+                FROM rental WHERE vehicle_id = ? AND returndatetime IS NULL
                 """;
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, vehicleId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) return mapRental(resultSet);
@@ -92,32 +99,36 @@ public class JdbcRentalRepository implements IRentalRepository {
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch active rental for vehicle: " + vehicleId, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public List<Rental> getAllRentals() {
-        String sql = "SELECT id, vehicle_id, user_id, rent_date_time, return_date_time FROM rental";
+        String sql = "SELECT id, vehicle_id, user_id, rentdatetime, returndatetime FROM rental";
         List<Rental> rentals = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) rentals.add(mapRental(resultSet));
             return rentals;
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch rentals", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     @Override
     public List<Rental> getRentalsByUser(String userId) {
         String sql = """
-                SELECT id, vehicle_id, user_id, rent_date_time, return_date_time
+                SELECT id, vehicle_id, user_id, rentdatetime, returndatetime
                 FROM rental WHERE user_id = ?
                 """;
         List<Rental> rentals = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) rentals.add(mapRental(resultSet));
@@ -125,6 +136,8 @@ public class JdbcRentalRepository implements IRentalRepository {
             return rentals;
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to fetch rentals for user: " + userId, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
@@ -145,8 +158,8 @@ public class JdbcRentalRepository implements IRentalRepository {
                 resultSet.getString("id"),
                 resultSet.getString("user_id"),
                 resultSet.getString("vehicle_id"),
-                parse(resultSet.getString("rent_date_time")),
-                parse(resultSet.getString("return_date_time"))
+                parse(resultSet.getString("rentdatetime")),
+                parse(resultSet.getString("returndatetime"))
         );
     }
 
