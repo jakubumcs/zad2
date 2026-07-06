@@ -41,13 +41,15 @@ public class TestResetController {
                 "8a2ae9bf-fa64-49a8-8a38-7a3944baac65",
                 "admin",
                 passwordEncoder.encode("admin123"),
-                "ADMIN"
+                "ADMIN",
+                "ul. Administracyjna 1, Lublin"
         ));
         userRepository.add(new User(
                 "dfd103d3-19fa-40be-a3bd-ffaac9e57734",
                 "jakub2",
                 passwordEncoder.encode("user123"),
-                "USER"
+                "USER",
+                "ul. Testowa 5, Lublin"
         ));
 
         vehicleRepository.add(Vehicle.builder()
