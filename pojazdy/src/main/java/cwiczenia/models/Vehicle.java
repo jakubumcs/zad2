@@ -45,6 +45,15 @@ public class Vehicle {
     @Column(nullable = false)
     private boolean rented;
 
+    @Column(name = "location_name")
+    private String locationName;
+
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "vehicle_attribute", joinColumns = @JoinColumn(name = "vehicle_id"))
     @MapKeyColumn(name = "attr_key")
@@ -75,6 +84,12 @@ public class Vehicle {
 
     public Vehicle(String id, String category, String brand, String model, int year,
                    String plate, double price, boolean rented, Map<String, Object> attributes) {
+        this(id, category, brand, model, year, plate, price, rented, null, 0.0, 0.0, attributes);
+    }
+
+    public Vehicle(String id, String category, String brand, String model, int year,
+                   String plate, double price, boolean rented, String locationName,
+                   double latitude, double longitude, Map<String, Object> attributes) {
         this.id = id;
         this.category = category;
         this.brand = brand;
@@ -83,6 +98,9 @@ public class Vehicle {
         this.plate = plate;
         this.price = price;
         this.rented = rented;
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
         setAttributes(attributes);
     }
 
@@ -94,6 +112,9 @@ public class Vehicle {
     public String getPlate() { return plate; }
     public double getPrice() { return price; }
     public boolean isRented() { return rented; }
+    public String getLocationName() { return locationName; }
+    public double getLatitude() { return latitude; }
+    public double getLongitude() { return longitude; }
     public Map<String, Object> getAttributes() {
         if ((attributes == null || attributes.isEmpty()) && storedAttributes != null && !storedAttributes.isEmpty()) {
             attributes = new HashMap<>(storedAttributes);
@@ -111,6 +132,14 @@ public class Vehicle {
     public void setPlate(String plate) { this.plate = plate; }
     public void setPrice(double price) { this.price = price; }
     public void setRented(boolean rented) { this.rented = rented; }
+    public void setLocationName(String locationName) { this.locationName = locationName; }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
+    public void setLocation(String locationName, double latitude, double longitude) {
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes != null ? new HashMap<>(attributes) : new HashMap<>();
         this.storedAttributes = new HashMap<>();
@@ -144,6 +173,9 @@ public class Vehicle {
                 plate,
                 price,
                 rented,
+                locationName,
+                latitude,
+                longitude,
                 getAttributes() == null ? new HashMap<>() : new HashMap<>(getAttributes())
         );
     }
@@ -157,6 +189,9 @@ public class Vehicle {
         private String plate;
         private double price;
         private boolean rented;
+        private String locationName;
+        private double latitude;
+        private double longitude;
         private Map<String, Object> attributes;
 
         public Builder id(String id) {
@@ -204,6 +239,21 @@ public class Vehicle {
             return this;
         }
 
+        public Builder locationName(String locationName) {
+            this.locationName = locationName;
+            return this;
+        }
+
+        public Builder latitude(double latitude) {
+            this.latitude = latitude;
+            return this;
+        }
+
+        public Builder longitude(double longitude) {
+            this.longitude = longitude;
+            return this;
+        }
+
         public Vehicle build() {
             String finalId = id != null ? id : UUID.randomUUID().toString();
             return new Vehicle(
@@ -215,6 +265,9 @@ public class Vehicle {
                     plate,
                     price,
                     rented,
+                    locationName,
+                    latitude,
+                    longitude,
                     attributes == null ? new HashMap<>() : new HashMap<>(attributes)
             );
         }

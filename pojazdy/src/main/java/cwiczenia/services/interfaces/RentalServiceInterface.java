@@ -3,6 +3,7 @@ package cwiczenia.services.interfaces;
 import cwiczenia.models.Rental;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface RentalServiceInterface {
@@ -13,4 +14,5 @@ public interface RentalServiceInterface {
     List<Rental> findUserRentals(String userId);
     boolean userHasActiveRental(String userId);
     boolean vehicleHasActiveRental(String vehicleId);
+    Map<String, String> payForRental(String rentalId);
 }

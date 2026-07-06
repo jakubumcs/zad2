@@ -30,8 +30,8 @@ public class JdbcVehicleRepository implements IVehicleRepository {
     @Override
     public void add(Vehicle vehicle) {
         String vehicleSql = """
-                INSERT INTO vehicle (id, category, brand, model, year, plate, price, rented)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO vehicle (id, category, brand, model, year, plate, price, rented, location_name, latitude, longitude)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT (id) DO UPDATE
                 SET category = EXCLUDED.category,
                     brand = EXCLUDED.brand,
@@ -39,7 +39,10 @@ public class JdbcVehicleRepository implements IVehicleRepository {
                     year = EXCLUDED.year,
                     plate = EXCLUDED.plate,
                     price = EXCLUDED.price,
-                    rented = EXCLUDED.rented
+                    rented = EXCLUDED.rented,
+                    location_name = EXCLUDED.location_name,
+                    latitude = EXCLUDED.latitude,
+                    longitude = EXCLUDED.longitude
                 """;
         String deleteAttributesSql = "DELETE FROM vehicle_attribute WHERE vehicle_id = ?";
         String insertAttributeSql = """
@@ -106,7 +109,7 @@ public class JdbcVehicleRepository implements IVehicleRepository {
 
     @Override
     public Vehicle getVehicle(String id) {
-        String sql = "SELECT id, category, brand, model, year, plate, price, rented FROM vehicle WHERE id = ?";
+        String sql = "SELECT id, category, brand, model, year, plate, price, rented, location_name, latitude, longitude FROM vehicle WHERE id = ?";
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
@@ -125,7 +128,7 @@ public class JdbcVehicleRepository implements IVehicleRepository {
 
     @Override
     public List<Vehicle> getVehicles() {
-        String sql = "SELECT id, category, brand, model, year, plate, price, rented FROM vehicle";
+        String sql = "SELECT id, category, brand, model, year, plate, price, rented, location_name, latitude, longitude FROM vehicle";
         List<Vehicle> vehicles = new ArrayList<>();
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (PreparedStatement statement = connection.prepareStatement(sql);
@@ -155,6 +158,9 @@ public class JdbcVehicleRepository implements IVehicleRepository {
         statement.setString(6, vehicle.getPlate());
         statement.setDouble(7, vehicle.getPrice());
         statement.setBoolean(8, vehicle.isRented());
+        statement.setString(9, vehicle.getLocationName());
+        statement.setDouble(10, vehicle.getLatitude());
+        statement.setDouble(11, vehicle.getLongitude());
     }
 
     private Vehicle mapVehicle(ResultSet resultSet) throws SQLException {
@@ -167,6 +173,9 @@ public class JdbcVehicleRepository implements IVehicleRepository {
                 resultSet.getString("plate"),
                 resultSet.getDouble("price"),
                 resultSet.getBoolean("rented"),
+                resultSet.getString("location_name"),
+                resultSet.getDouble("latitude"),
+                resultSet.getDouble("longitude"),
                 new HashMap<>()
         );
     }

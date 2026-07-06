@@ -5,6 +5,6 @@ import cwiczenia.models.User;
 import java.util.Optional;
 
 public interface AuthServiceInterface {
-    boolean register(String login, String rawPassword);
+    boolean register(String login, String rawPassword, String address);
     Optional<User> login(String login, String rawPassword);
 }

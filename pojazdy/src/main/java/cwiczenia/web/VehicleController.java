@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -47,5 +48,13 @@ public class VehicleController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         vehicleService.removeVehicle(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/location")
+    public Vehicle setLocation(@PathVariable String id, @RequestBody Map<String, Object> body) {
+        String locationName = (String) body.get("locationName");
+        double latitude = body.get("latitude") == null ? 0.0 : ((Number) body.get("latitude")).doubleValue();
+        double longitude = body.get("longitude") == null ? 0.0 : ((Number) body.get("longitude")).doubleValue();
+        return vehicleService.setLocation(id, locationName, latitude, longitude);
     }
 }

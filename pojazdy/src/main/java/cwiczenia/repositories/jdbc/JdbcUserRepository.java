@@ -26,7 +26,7 @@ public class JdbcUserRepository implements IUserRepository {
 
     @Override
     public User getUser(String login) {
-        String sql = "SELECT id, login, password_hash, role FROM users WHERE login = ?";
+        String sql = "SELECT id, login, password_hash, role, address FROM users WHERE login = ?";
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, login);
@@ -43,7 +43,7 @@ public class JdbcUserRepository implements IUserRepository {
 
     @Override
     public List<User> getUsers() {
-        String sql = "SELECT id, login, password_hash, role FROM users";
+        String sql = "SELECT id, login, password_hash, role, address FROM users";
         List<User> users = new ArrayList<>();
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (PreparedStatement statement = connection.prepareStatement(sql);
@@ -60,12 +60,13 @@ public class JdbcUserRepository implements IUserRepository {
     @Override
     public void add(User user) {
         String sql = """
-                INSERT INTO users (id, login, password_hash, role)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO users (id, login, password_hash, role, address)
+                VALUES (?, ?, ?, ?, ?)
                 ON CONFLICT (login) DO UPDATE
                 SET id = EXCLUDED.id,
                 password_hash = EXCLUDED.password_hash,
-                role = EXCLUDED.role
+                role = EXCLUDED.role,
+                address = EXCLUDED.address
                 """;
         Connection connection = DataSourceUtils.getConnection(dataSource);
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -73,6 +74,7 @@ public class JdbcUserRepository implements IUserRepository {
             statement.setString(2, user.getLogin());
             statement.setString(3, user.getPasswordHash());
             statement.setString(4, user.getRole());
+            statement.setString(5, user.getAddress());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to save user: " + user.getLogin(), e);
@@ -116,7 +118,8 @@ public class JdbcUserRepository implements IUserRepository {
                 resultSet.getString("id"),
                 resultSet.getString("login"),
                 resultSet.getString("password_hash"),
-                resultSet.getString("role")
+                resultSet.getString("role"),
+                resultSet.getString("address")
         );
     }
 }

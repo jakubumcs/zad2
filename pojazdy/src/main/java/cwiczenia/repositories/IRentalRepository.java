@@ -11,4 +11,5 @@ public interface IRentalRepository {
     Rental getActiveRentalByVehicle(String vehicleId);
     List<Rental> getAllRentals();
     List<Rental> getRentalsByUser(String userId);
+    Rental getById(String id);
 }

@@ -67,6 +67,13 @@ public class RentalRepository implements IRentalRepository {
     public List<Rental> getAllRentals() { return new ArrayList<>(rentals); }
 
     @Override
+    public Rental getById(String id) {
+        for (Rental r : rentals)
+            if (r.getId().equals(id)) return r;
+        return null;
+    }
+
+    @Override
     public List<Rental> getRentalsByUser(String userId) {
         return rentals.stream()
                 .filter(r -> r.getUserId().equals(userId))

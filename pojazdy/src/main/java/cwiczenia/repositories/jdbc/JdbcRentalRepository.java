@@ -105,6 +105,26 @@ public class JdbcRentalRepository implements IRentalRepository {
     }
 
     @Override
+    public Rental getById(String id) {
+        String sql = """
+                SELECT id, vehicle_id, user_id, rentdatetime, returndatetime
+                FROM rental WHERE id = ?
+                """;
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) return mapRental(resultSet);
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Failed to fetch rental: " + id, e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
+        }
+    }
+
+    @Override
     public List<Rental> getAllRentals() {
         String sql = "SELECT id, vehicle_id, user_id, rentdatetime, returndatetime FROM rental";
         List<Rental> rentals = new ArrayList<>();

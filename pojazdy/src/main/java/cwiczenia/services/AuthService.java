@@ -29,10 +29,10 @@ public class AuthService implements AuthServiceInterface {
     }
 
     @Override
-    public boolean register(String login, String password) {
+    public boolean register(String login, String password, String address) {
         if (userRepository.getUser(login) != null) return false;
         String hash = passwordEncoder.encode(password);
-        User user = new User(login, hash, "USER");
+        User user = new User(login, hash, "USER", address);
         userRepository.add(user);
         return true;
     }

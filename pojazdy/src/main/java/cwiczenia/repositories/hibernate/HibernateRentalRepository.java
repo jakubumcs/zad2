@@ -46,6 +46,11 @@ public class HibernateRentalRepository implements IRentalRepository {
     }
 
     @Override
+    public Rental getById(String id) {
+        return sessionManager.execute(session -> session.find(Rental.class, id));
+    }
+
+    @Override
     public List<Rental> getAllRentals() {
         return sessionManager.execute(session ->
                 session.createQuery(

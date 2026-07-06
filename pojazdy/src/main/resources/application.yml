@@ -17,3 +17,27 @@ carrent:
 jwt:
   secret: ${JWT_SECRET:ThisIsAVeryLongSecretKeyForJWTSigningAtLeast256BitsLong!!}
   expiration-ms: 86400000
+
+  carrent:
+    location:
+      scheduler-interval-ms: 300000
+      allowed:
+        - name: "Siedziba Lublin"
+          latitude: 51.2465
+          longitude: 22.5684
+        - name: "Filia Warszawa"
+          latitude: 52.2297
+          longitude: 21.0122
+      out-of-bounds:
+        - name: "Trasa A2"
+          latitude: 52.0
+          longitude: 19.5
+        - name: "Trasa S17"
+          latitude: 51.5
+          longitude: 22.0
+        - name: "Parking miejski Kraków"
+          latitude: 50.0647
+          longitude: 19.9450
+
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY}

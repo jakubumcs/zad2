@@ -25,20 +25,29 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    @Column(name = "address")
+    private String address;
+
     public User() {}
 
     public User(String login, String passwordHash, String role) {
+        this(login, passwordHash, role, null);
+    }
+
+    public User(String login, String passwordHash, String role, String address) {
         this.id = UUID.randomUUID().toString();
         this.login = login;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.address = address;
     }
 
-    public User(String id, String login, String passwordHash, String role) {
+    public User(String id, String login, String passwordHash, String role, String address) {
         this.id = id;
         this.login = login;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.address = address;
     }
 
     public String getId() { return id; }
@@ -47,18 +56,20 @@ public class User {
     @JsonIgnore
     public String getPassword() { return passwordHash; }
     public String getRole() { return role; }
+    public String getAddress() { return address; }
 
     public void setId(String id) { this.id = id; }
     public void setLogin(String login) { this.login = login; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
     public void setRole(String role) { this.role = role; }
+    public void setAddress(String address) { this.address = address; }
 
     public User copy() {
-        return new User(id, login, passwordHash, role);
+        return new User(id, login, passwordHash, role, address);
     }
 
     @Override
     public String toString() {
-        return "id=" + id + " login=" + login + " role=" + role;
+        return "id=" + id + " login=" + login + " role=" + role + " address=" + address;
     }
 }

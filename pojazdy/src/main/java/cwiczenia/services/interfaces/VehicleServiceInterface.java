@@ -11,4 +11,5 @@ public interface VehicleServiceInterface {
     Vehicle addVehicle(Vehicle vehicle);
     void removeVehicle(String vehicleId);
     boolean isVehicleRented(String vehicleId);
+    Vehicle setLocation(String vehicleId, String locationName, double latitude, double longitude);
 }

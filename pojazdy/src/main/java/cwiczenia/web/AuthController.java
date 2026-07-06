@@ -25,9 +25,10 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, String> body) {
         String login = body.get("login");
         String password = body.get("password");
+        String address = body.get("address");
         if (login == null || password == null)
             return ResponseEntity.badRequest().body(Map.of("error", "Login i hasło są wymagane."));
-        boolean success = authService.register(login, password);
+        boolean success = authService.register(login, password, address);
         if (!success)
             return ResponseEntity.badRequest().body(Map.of("error", "Użytkownik już istnieje."));
         return ResponseEntity.ok(Map.of("message", "Zarejestrowano pomyślnie."));

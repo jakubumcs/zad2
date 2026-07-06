@@ -42,7 +42,7 @@ public class VehicleService implements VehicleServiceInterface {
         Vehicle v = vehicleRepository.getVehicle(id);
         if (v == null) throw new IllegalArgumentException("Nie znaleziono pojazdu o ID: " + id);
 
-        if (rentalRepository.getActiveRentalByVehicle(id) != null) {
+        if (v.isRented()) {
             throw new IllegalStateException(
                     "Nie można usunąć pojazdu, bo jest aktualnie wypożyczony.");
         }
@@ -53,14 +53,14 @@ public class VehicleService implements VehicleServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public List<Vehicle> findAllVehicles() {
-        return withRentalStatus(vehicleRepository.getVehicles());
+        return vehicleRepository.getVehicles();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Vehicle> findAvailableVehicles() {
-        return withRentalStatus(vehicleRepository.getVehicles()).stream()
-                .filter(v -> rentalRepository.getActiveRentalByVehicle(v.getId()) == null)
+        return vehicleRepository.getVehicles().stream()
+                .filter(v -> !v.isRented())
                 .collect(Collectors.toList());
     }
 
@@ -69,23 +69,22 @@ public class VehicleService implements VehicleServiceInterface {
     public Vehicle findById(String id) {
         Vehicle v = vehicleRepository.getVehicle(id);
         if (v == null) throw new IllegalArgumentException("Nie znaleziono pojazdu o ID: " + id);
-        return withRentalStatus(v);
+        return v;
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean isVehicleRented(String vehicleId) {
-        return rentalRepository.getActiveRentalByVehicle(vehicleId) != null;
+        Vehicle v = vehicleRepository.getVehicle(vehicleId);
+        return v != null && v.isRented();
     }
 
-    private List<Vehicle> withRentalStatus(List<Vehicle> vehicles) {
-        return vehicles.stream()
-                .map(this::withRentalStatus)
-                .collect(Collectors.toList());
-    }
-
-    private Vehicle withRentalStatus(Vehicle vehicle) {
-        vehicle.setRented(rentalRepository.getActiveRentalByVehicle(vehicle.getId()) != null);
+    @Override
+    public Vehicle setLocation(String vehicleId, String locationName, double latitude, double longitude) {
+        Vehicle vehicle = vehicleRepository.getVehicle(vehicleId);
+        if (vehicle == null) throw new IllegalArgumentException("Nie znaleziono pojazdu o ID: " + vehicleId);
+        vehicle.setLocation(locationName, latitude, longitude);
+        vehicleRepository.update(vehicle);
         return vehicle;
     }
 }
