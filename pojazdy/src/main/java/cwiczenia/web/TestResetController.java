@@ -60,6 +60,9 @@ public class TestResetController {
                 .year(2025)
                 .plate("Lu123")
                 .price(300.0)
+                .locationName("Siedziba Lublin")
+                .latitude(51.2465)
+                .longitude(22.5684)
                 .attributes(Map.of("fuelType", "Benzyna"))
                 .build());
         vehicleRepository.add(Vehicle.builder()
@@ -70,6 +73,9 @@ public class TestResetController {
                 .year(2020)
                 .plate("Lu321")
                 .price(200.0)
+                .locationName("Siedziba Lublin")
+                .latitude(51.2465)
+                .longitude(22.5684)
                 .attributes(Map.of("licence", "A", "fuelType", "Benzyna"))
                 .build());
         vehicleRepository.add(Vehicle.builder()
@@ -80,6 +86,9 @@ public class TestResetController {
                 .year(2022)
                 .plate("Lu333")
                 .price(800.0)
+                .locationName("Siedziba Lublin")
+                .latitude(51.2465)
+                .longitude(22.5684)
                 .attributes(Map.of("seats", 7))
                 .build());
         vehicleRepository.add(Vehicle.builder()
@@ -90,6 +99,9 @@ public class TestResetController {
                 .year(2020)
                 .plate("LU12345")
                 .price(150.0)
+                .locationName("Siedziba Lublin")
+                .latitude(51.2465)
+                .longitude(22.5684)
                 .attributes(Map.of("fuelType", "petrol"))
                 .build());
 
