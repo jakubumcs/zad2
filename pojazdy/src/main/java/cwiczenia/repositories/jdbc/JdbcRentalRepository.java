@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -165,11 +166,11 @@ public class JdbcRentalRepository implements IRentalRepository {
         statement.setString(1, rental.getId());
         statement.setString(2, rental.getVehicleId());
         statement.setString(3, rental.getUserId());
-        statement.setString(4, stringify(rental.getRentDateTime()));
+        statement.setTimestamp(4, Timestamp.valueOf(rental.getRentDateTime()));
         if (rental.getReturnDateTime() == null) {
-            statement.setNull(5, Types.VARCHAR);
+            statement.setNull(5, Types.TIMESTAMP);
         } else {
-            statement.setString(5, stringify(rental.getReturnDateTime()));
+            statement.setTimestamp(5, Timestamp.valueOf(rental.getReturnDateTime()));
         }
     }
 
@@ -178,10 +179,12 @@ public class JdbcRentalRepository implements IRentalRepository {
                 resultSet.getString("id"),
                 resultSet.getString("user_id"),
                 resultSet.getString("vehicle_id"),
-                parse(resultSet.getString("rentdatetime")),
-                parse(resultSet.getString("returndatetime"))
+                toLocalDateTime(resultSet.getTimestamp("rentdatetime")),
+                toLocalDateTime(resultSet.getTimestamp("returndatetime"))
         );
     }
+
+    private LocalDateTime toLocalDateTime(Timestamp value) { return value == null ? null : value.toLocalDateTime(); }
 
     private String stringify(LocalDateTime value) { return value == null ? null : value.toString(); }
     private LocalDateTime parse(String value) { return value == null ? null : LocalDateTime.parse(value); }
